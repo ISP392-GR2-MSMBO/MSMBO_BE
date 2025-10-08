@@ -1,7 +1,7 @@
 package com.example.ticket_booking_system.mapper;
 
 import com.example.ticket_booking_system.dto.reponse.movie.MovieResponse;
-import com.example.ticket_booking_system.dto.request.MovieRequest;
+import com.example.ticket_booking_system.dto.request.movie.MovieRequest;
 import com.example.ticket_booking_system.entity.Movie;
 
 public class MovieMapper {

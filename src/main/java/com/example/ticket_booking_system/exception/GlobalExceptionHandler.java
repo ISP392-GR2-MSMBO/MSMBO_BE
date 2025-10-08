@@ -1,11 +1,5 @@
 package com.example.ticket_booking_system.exception;
 
-import com.example.ticket_booking_system.dto.request.ApiResponse;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-
 //@ControllerAdvice
 //public class GlobalExceptionHandler {
 //    // Bắt tất cả lỗi chưa được xử lý cụ thể

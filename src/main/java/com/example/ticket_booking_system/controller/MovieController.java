@@ -9,9 +9,8 @@ import com.example.ticket_booking_system.entity.Movie;
 import com.example.ticket_booking_system.service.MovieService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import com.example.ticket_booking_system.dto.request.MovieRequest;
+import com.example.ticket_booking_system.dto.request.movie.MovieRequest;
 import com.example.ticket_booking_system.dto.reponse.movie.MovieResponse;
 import com.example.ticket_booking_system.mapper.MovieMapper;
 

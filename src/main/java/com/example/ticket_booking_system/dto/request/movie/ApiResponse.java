@@ -1,4 +1,4 @@
-package com.example.ticket_booking_system.dto.request;
+package com.example.ticket_booking_system.dto.request.movie;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
