@@ -7,7 +7,9 @@ public enum ErrorCode {
     USER_EXISTED(1002, "User existed"),
     USERNAME_INVALID(1003, "Username must be at least 3 characters"),
     INVALID_PASSWORD(1004, "Password must be at least 8 characters"),
-    SHOWTIME_NOT_FOUND(404, "Showtime not found");
+    SHOWTIME_NOT_FOUND(404, "Showtime not found"),
+    MISSING_MOVIE_ID(400, "Thiếu ID phim để cập nhật"),
+    INVALID_STATUS( 402,"Invalid movie status");
             ;
     private final int code;
     private final String message;

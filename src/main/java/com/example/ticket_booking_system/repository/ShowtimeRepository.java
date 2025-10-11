@@ -8,6 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ShowtimeRepository extends JpaRepository<Showtime, Integer> {
-    List<Showtime> findByMovieID(Integer movieID);
+public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
+    List<Showtime> findByMovieID(Long movieID);
 }

@@ -37,14 +37,14 @@ import java.util.List;
 
         // ✅ Lấy showtime theo ID
         @GetMapping("/{id}")
-        public ShowtimeResponse getShowtimeById(@PathVariable Integer id) {
+        public ShowtimeResponse getShowtimeById(@PathVariable Long id) {
             Showtime showtime = showtimeService.getShowtimeById(id);
             return ShowtimeMapper.toResponse(showtime);
         }
 
         // ✅ Tìm kiếm theo movieId
         @GetMapping("/search")
-        public ResponseEntity<?> searchShowtimes(@RequestParam Integer movieId) {
+        public ResponseEntity<?> searchShowtimes(@RequestParam Long movieId) {
             var list = showtimeService.findByMovieId(movieId);
             if (list.isEmpty()) {
                 throw new AppException(ErrorCode.SHOWTIME_NOT_FOUND);
@@ -66,14 +66,14 @@ import java.util.List;
 
         // ✅ Cập nhật showtime
         @PutMapping("/{id}")
-        public ResponseEntity<ShowtimeResponse> updateShowtime(@PathVariable Integer id, @RequestBody ShowtimeRequest request) {
+        public ResponseEntity<ShowtimeResponse> updateShowtime(@PathVariable Long id, @RequestBody ShowtimeRequest request) {
             Showtime updated = showtimeService.updateShowtime(id, ShowtimeMapper.toEntity(request));
             return ResponseEntity.ok(ShowtimeMapper.toResponse(updated));
         }
 
         // ✅ Xoá showtime
         @DeleteMapping("/{id}")
-        public ResponseEntity<Void> deleteShowtime(@PathVariable Integer id) {
+        public ResponseEntity<Void> deleteShowtime(@PathVariable Long id) {
             showtimeService.deleteShowtime(id);
             return ResponseEntity.noContent().build();
         }
