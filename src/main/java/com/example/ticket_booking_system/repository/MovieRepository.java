@@ -2,6 +2,7 @@ package com.example.ticket_booking_system.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.ticket_booking_system.entity.Movie;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,4 +14,5 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     Optional<Movie> findByMovieNameIgnoreCase(String movieName);
     // Thêm phương thức tìm kiếm gần đúng (LIKE)
     List<Movie> findByMovieNameContainingIgnoreCase(String keyword);
+    List<Movie> findByStatusIgnoreCase(@Param("status")String status);
 }

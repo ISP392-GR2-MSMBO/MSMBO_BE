@@ -1,9 +1,15 @@
 package com.example.ticket_booking_system.controller;
 
+import com.example.ticket_booking_system.entity.Showtime;
 import com.example.ticket_booking_system.exception.AppException;
 import com.example.ticket_booking_system.exception.ErrorCode;
+import com.example.ticket_booking_system.service.ShowtimeService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.example.ticket_booking_system.entity.Movie;
 import com.example.ticket_booking_system.service.MovieService;
@@ -12,55 +18,64 @@ import java.util.List;
 
 import com.example.ticket_booking_system.dto.request.movie.MovieRequest;
 import com.example.ticket_booking_system.dto.reponse.movie.MovieResponse;
-import com.example.ticket_booking_system.mapper.MovieMapper;
+//import com.example.ticket_booking_system.mapper.MovieMapper;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/movies")
 //@CrossOrigin(origins = "http://localhost:3000") // cần thêm khi nối React
 public class MovieController {
     private final MovieService movieService;
+    private final ShowtimeService showtimeService;
     @Autowired
-    public MovieController(MovieService movieService){
-        this.movieService=movieService;
-    }
+    private final ModelMapper modelMapper;
     @GetMapping
-    public List<MovieResponse> getAllMovies(){
-        List<MovieResponse> result = new java.util.ArrayList<>();
-        for (Movie m : movieService.getAllMovies()) {
-            result.add(MovieMapper.toResponse(m));
-        }
-        return result;
-    }
-    @GetMapping("/{movieID}")
-    public MovieResponse getMovie(@PathVariable("movieID") Long movieId) {
-        return MovieMapper.toResponse(movieService.getMovie(movieId));
+    public List<MovieResponse> getAllMovies() {
+        return movieService.getAllMovies()
+                .stream()
+                .map(m -> modelMapper.map(m, MovieResponse.class))
+                .toList();
     }
 
-    @GetMapping("/search")
+    @GetMapping("/{movieID}")
+    public MovieResponse getMovie(@PathVariable("movieID") Long movieId) {
+        Movie m = movieService.getMovie(movieId);
+        return modelMapper.map(m, MovieResponse.class);
+    }
+//    // ✅ (Tuỳ chọn) Lọc theo status: /movies/search?status=Now%20Showing
+//    @GetMapping(value = "/search", params = "status")
+//    public ResponseEntity<?> searchByStatus(@RequestParam String status) {
+//        List<Movie> movies = movieService.findByStatus(status);
+//        if (movies.isEmpty()) throw new AppException(ErrorCode.MOVIE_NOT_FOUND);
+//        List<MovieResponse> res = movies.stream()
+//                .map(m -> modelMapper.map(m, MovieResponse.class))
+//                .toList();
+//        return ResponseEntity.ok(res);
+//    }
+
+    @GetMapping(value = "/search", params = "name")
     public ResponseEntity<?> searchMovies(@RequestParam String name) {
         List<Movie> movies = movieService.searchMoviesByKeyword(name);
-        if (movies.isEmpty()) {
-            throw new AppException(ErrorCode.MOVIE_NOT_FOUND);
-        }
-        List<MovieResponse> res = new java.util.ArrayList<>();
-        for (Movie m : movies) {
-            res.add(MovieMapper.toResponse(m));
-        }
+        if (movies.isEmpty()) throw new AppException(ErrorCode.MOVIE_NOT_FOUND);
+        List<MovieResponse> res = movies.stream()
+                .map(m -> modelMapper.map(m, MovieResponse.class))
+                .toList();
         return ResponseEntity.ok(res);
     }
 
-    // Thêm phim
     @PostMapping
-    public MovieResponse createMovie(@RequestBody MovieRequest request) {
-        Movie toSave = MovieMapper.toEntity(request);
-        return MovieMapper.toResponse(movieService.saveMovie(toSave));
+    public MovieResponse createMovie(@Valid @RequestBody MovieRequest request) {
+        Movie toSave = modelMapper.map(request, Movie.class);
+        Movie saved = movieService.saveMovie(toSave);
+        return modelMapper.map(saved, MovieResponse.class); // map từ entity đã lưu
     }
 
-    // Cập nhật phim
     @PutMapping("/{id}")
-    public ResponseEntity<MovieResponse> updateMovie(@PathVariable Long id, @RequestBody MovieRequest request) {
-        Movie updated = movieService.updateMovie(id, MovieMapper.toEntity(request));
-        return ResponseEntity.ok(MovieMapper.toResponse(updated));
+    public ResponseEntity<MovieResponse> updateMovie(@PathVariable Long id,
+                                                     @Valid @RequestBody MovieRequest request) {
+        Movie toUpdate = modelMapper.map(request, Movie.class);
+        Movie updated = movieService.updateMovie(id, toUpdate);
+        return ResponseEntity.ok(modelMapper.map(updated, MovieResponse.class));
     }
 
     // Xoá phim
@@ -69,4 +84,4 @@ public class MovieController {
         movieService.deleteMovie(id);
         return ResponseEntity.noContent().build();
     }
-    }
+}
