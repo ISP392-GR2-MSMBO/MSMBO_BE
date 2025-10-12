@@ -40,12 +40,36 @@ public class MovieService {
     public List<Movie> searchMoviesByKeyword(String keyword) {
         return movieRepository.findByMovieNameContainingIgnoreCase(keyword);
     }
-
+    // Thêm lại: tìm theo status (string) – có chuẩn hoá trước khi query
+    public List<Movie> findByStatus(String rawStatus) {
+        String normalized = normalizeStatus(rawStatus);
+        return movieRepository.findByStatusIgnoreCase(normalized);
+    }
+    private String normalizeStatus(String rawStatus) {
+        if (rawStatus == null || rawStatus.isBlank()) {
+            return "Coming Soon"; // mặc định
+        }
+        String s = rawStatus.trim().toLowerCase();
+        // các biến thể của Coming Soon
+        if (s.contains("coming") || s.contains("soon")) {
+            return "Coming Soon";
+        }
+        // các biến thể của Now Showing
+        if (s.contains("now") || s.contains("showing")) {
+            return "Now Showing";
+        }
+        // các biến thể của Ended
+        if (s.contains("end")) {
+            return "Ended";
+        }
+        throw new AppException(ErrorCode.INVALID_STATUS);
+    }
     // Thêm movie mới
     public Movie saveMovie(@NonNull Movie movie) {
         if (movieRepository.existsByMovieNameIgnoreCase(movie.getMovieName())) {
             throw new AppException(ErrorCode.MOVIE_EXISTED);
         }
+        movie.setStatus(normalizeStatus(movie.getStatus()));
         if (movie.getStatus() == null || movie.getStatus().isBlank()) {
             movie.setStatus("Coming Soon");
         } else {
@@ -78,7 +102,7 @@ public class MovieService {
                 .releaseDate(movieDetails.getReleaseDate())
                 .language(movieDetails.getLanguage())
                 .description(movieDetails.getDescription())
-                .status(movieDetails.getStatus())
+                .status(normalizeStatus(movieDetails.getStatus()))
                 .build();
 
         return movieRepository.save(updatedMovie);

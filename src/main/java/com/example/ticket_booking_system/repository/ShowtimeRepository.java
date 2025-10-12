@@ -13,18 +13,6 @@ import java.util.Optional;
 
 @Repository
 public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
-    List<Showtime> findByMovie_MovieID(Long movieID);
-    // Tuỳ chọn: lọc thêm theo rạp
-    List<Showtime> findByMovie_MovieNameContainingIgnoreCaseAndTheater_TheaterID(
-            String keyword, Long theaterId);
-    // Tuỳ chọn: kèm cả ngày & rạp
-    List<Showtime> findByMovie_MovieNameContainingIgnoreCaseAndTheater_TheaterIDAndDate(
-            String keyword, Long theaterId, java.time.LocalDate date);
-    // Tìm showtime theo *một phần* tên phim (không phân biệt hoa/thường)
-    List<Showtime> findByMovie_MovieNameContainingIgnoreCase(String keyword);
-    // Tuỳ chọn: lọc thêm theo ngày
-    List<Showtime> findByMovie_MovieNameContainingIgnoreCaseAndDate(
-            String keyword, java.time.LocalDate date);
     // Overlap nếu: newStart < s.endTime AND newEnd > s.startTime (cùng theater & date)
     @Query("""
            select (count(s) > 0) from Showtime s

@@ -22,27 +22,12 @@ public class ShowtimeService {
         }
         return showtimes;
     }
-    
-    //  Find by movie ID (used by controller /showtimes/search?movieId=)
-    public List<Showtime> findByMovieId(Long movieId) {
-        List<Showtime> showtimes = showtimeRepository.findByMovie_MovieID(movieId);
-        if (showtimes.isEmpty()) {
-            throw new AppException(ErrorCode.SHOWTIME_NOT_FOUND);
-        }
-        return showtimes;
-    }
-    public List<Showtime> findByMovieName(String keyword) {
-        var list = showtimeRepository.findByMovie_MovieNameContainingIgnoreCase(keyword);
-        if (list.isEmpty()) {
-            throw new AppException(ErrorCode.SHOWTIME_NOT_FOUND);
-        }
-        return list;
-    }
-    //  Lấy showtime theo ID
-    public Showtime getShowtimeById(Long id) {
-        return showtimeRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.SHOWTIME_NOT_FOUND));
-    }
+
+//    //  Lấy showtime theo ID
+//    public Showtime getShowtimeById(Long id) {
+//        return showtimeRepository.findById(id)
+//                .orElseThrow(() -> new AppException(ErrorCode.SHOWTIME_NOT_FOUND));
+//    }
     //  Add new showtime
     public Showtime saveShowtime(Showtime showtime) {
         if (showtime.getTheater() == null || showtime.getTheater().getTheaterID() == null) {
