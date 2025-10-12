@@ -7,6 +7,7 @@ import com.example.ticket_booking_system.exception.AppException;
 import com.example.ticket_booking_system.exception.ErrorCode;
 import com.example.ticket_booking_system.mapper.ShowtimeMapper;
 import com.example.ticket_booking_system.service.ShowtimeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,10 +56,19 @@ import java.util.List;
             }
             return ResponseEntity.ok(result);
         }
+        @GetMapping("/search-by-name")
+        public ResponseEntity<?> searchByMovieName(@RequestParam String q) {
+            var list = showtimeService.findByMovieName(q);
+            var result = new java.util.ArrayList<ShowtimeResponse>();
+            for (var s : list) {
+                result.add(ShowtimeMapper.toResponse(s));
+            }
+            return ResponseEntity.ok(result);
+        }
 
         // ✅ Thêm showtime mới
         @PostMapping
-        public ShowtimeResponse createShowtime(@RequestBody ShowtimeRequest request) {
+        public ShowtimeResponse createShowtime(@Valid @RequestBody ShowtimeRequest request) {
             Showtime toSave = ShowtimeMapper.toEntity(request);
             Showtime saved = showtimeService.saveShowtime(toSave);
             return ShowtimeMapper.toResponse(saved);
@@ -66,7 +76,7 @@ import java.util.List;
 
         // ✅ Cập nhật showtime
         @PutMapping("/{id}")
-        public ResponseEntity<ShowtimeResponse> updateShowtime(@PathVariable Long id, @RequestBody ShowtimeRequest request) {
+        public ResponseEntity<ShowtimeResponse> updateShowtime(@PathVariable Long id,@Valid @RequestBody ShowtimeRequest request) {
             Showtime updated = showtimeService.updateShowtime(id, ShowtimeMapper.toEntity(request));
             return ResponseEntity.ok(ShowtimeMapper.toResponse(updated));
         }
