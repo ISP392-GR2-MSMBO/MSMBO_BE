@@ -16,7 +16,7 @@ import java.util.List;
 
     @RestController
     @RequestMapping("/showtimes")
-//@CrossOrigin(origins = "http://localhost:3000") // thêm khi nối React
+    @CrossOrigin(origins = "http://localhost:5173") // thêm khi nối React
     public class ShowtimeController {
 
         private final ShowtimeService showtimeService;
