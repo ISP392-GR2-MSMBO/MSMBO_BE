@@ -25,11 +25,18 @@ public class ShowtimeService {
     
     //  Find by movie ID (used by controller /showtimes/search?movieId=)
     public List<Showtime> findByMovieId(Long movieId) {
-        List<Showtime> showtimes = showtimeRepository.findByMovieID(movieId);
+        List<Showtime> showtimes = showtimeRepository.findByMovie_MovieID(movieId);
         if (showtimes.isEmpty()) {
             throw new AppException(ErrorCode.SHOWTIME_NOT_FOUND);
         }
         return showtimes;
+    }
+    public List<Showtime> findByMovieName(String keyword) {
+        var list = showtimeRepository.findByMovie_MovieNameContainingIgnoreCase(keyword);
+        if (list.isEmpty()) {
+            throw new AppException(ErrorCode.SHOWTIME_NOT_FOUND);
+        }
+        return list;
     }
     //  Lấy showtime theo ID
     public Showtime getShowtimeById(Long id) {
@@ -38,6 +45,20 @@ public class ShowtimeService {
     }
     //  Add new showtime
     public Showtime saveShowtime(Showtime showtime) {
+        if (showtime.getTheater() == null || showtime.getTheater().getTheaterID() == null) {
+            throw new AppException(ErrorCode.THEATER_NOT_FOUND);
+        }
+        // trùng giờ trong cùng rạp & cùng ngày (overlap)
+        boolean conflict = showtimeRepository.existsOverlap(
+                showtime.getTheater().getTheaterID(),
+                showtime.getDate(),
+                showtime.getStartTime(),
+                showtime.getEndTime()
+        );
+        if (conflict) {
+            throw new AppException(ErrorCode.SHOWTIME_CONFLICT);
+        }
+
         return showtimeRepository.save(showtime);
     }
 
@@ -46,11 +67,21 @@ public class ShowtimeService {
         Showtime existing = showtimeRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.SHOWTIME_NOT_FOUND));
 
-        existing.setTheaterID(updatedShowtime.getTheaterID());
-        existing.setMovieID(updatedShowtime.getMovieID());
+        existing.setTheater(updatedShowtime.getTheater());
+        existing.setMovie(updatedShowtime.getMovie());
+        existing.setDate(updatedShowtime.getDate());
         existing.setStartTime(updatedShowtime.getStartTime());
         existing.setEndTime(updatedShowtime.getEndTime());
-
+        boolean conflict = showtimeRepository.existsOverlap(
+                existing.getTheater().getTheaterID(),
+                existing.getDate(),
+                existing.getStartTime(),
+                existing.getEndTime()
+                //existing.getShowtimeID()
+        );
+        if (conflict) {
+            throw new AppException(ErrorCode.SHOWTIME_CONFLICT);
+        }
         return showtimeRepository.save(existing);
     }
 

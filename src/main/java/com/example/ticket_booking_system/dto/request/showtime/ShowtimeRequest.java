@@ -1,8 +1,13 @@
 package com.example.ticket_booking_system.dto.request.showtime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @NoArgsConstructor
@@ -10,8 +15,16 @@ import java.time.LocalDateTime;
 @Builder
 public class ShowtimeRequest {
     //private Long showtimeID;
-    private String theaterID;
+    private Long theaterID;
     private Long movieID;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    @NotNull
+    private LocalDate date;
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+    @Schema(type = "string", example = "10:00", format = "time")
+    private LocalTime startTime;
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+    @Schema(type = "string", example = "12:00", format = "time")
+    private LocalTime endTime;
 }
