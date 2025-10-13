@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173") // can them khi noi react
+@CrossOrigin(origins = "http://localhost:3000") // can them khi noi react
 public class UserController {
 
     private final UserService userService;
