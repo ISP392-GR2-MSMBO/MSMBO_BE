@@ -2,6 +2,7 @@ package com.example.ticket_booking_system.controller;
 
 import com.example.ticket_booking_system.dto.request.user.UserRequest;
 import com.example.ticket_booking_system.dto.reponse.user.UserResponse;
+import com.example.ticket_booking_system.dto.request.user.UserUpdateProfileRequest;
 import com.example.ticket_booking_system.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173") // can them khi noi react
 public class UserController {
 
     private final UserService userService;
@@ -24,13 +26,13 @@ public class UserController {
     }
 
     // Lấy user theo username
-    @GetMapping("/{username}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable String username) {
-        return ResponseEntity.ok(userService.getUserByUsername(username));
+    @GetMapping("/search/username")
+    public ResponseEntity<List<UserResponse>> searchUsersByUsername(@RequestParam String keyword) {
+        return ResponseEntity.ok(userService.searchUsersByUsername(keyword));
     }
 
-    //search
-    @GetMapping("/search")
+    //search fullname
+    @GetMapping("/search/fullName")
     public ResponseEntity<List<UserResponse>> searchUsers(@RequestParam String keyword) {
         return ResponseEntity.ok(userService.searchUsersByFullName(keyword));
     }
@@ -41,8 +43,15 @@ public class UserController {
         return ResponseEntity.ok(userService.createUser(request));
     }
 
+    // Cập nhật thông tin user theo ID
+    @PutMapping("/updateUser/{id}")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserUpdateProfileRequest request) {
+        return ResponseEntity.ok(userService.updateUser(id, request));
+    }
+
+
     // Xóa user theo ID
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteUser/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok("User deleted successfully");

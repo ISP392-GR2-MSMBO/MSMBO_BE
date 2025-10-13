@@ -2,7 +2,10 @@ package com.example.ticket_booking_system.service;
 
 import com.example.ticket_booking_system.dto.request.user.UserRequest;
 import com.example.ticket_booking_system.dto.reponse.user.UserResponse;
+import com.example.ticket_booking_system.dto.request.user.UserUpdateProfileRequest;
 import com.example.ticket_booking_system.entity.User;
+import com.example.ticket_booking_system.exception.AppException;
+import com.example.ticket_booking_system.exception.ErrorCode;
 import com.example.ticket_booking_system.mapper.UserMapper;
 import com.example.ticket_booking_system.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +31,10 @@ public class UserService {
     // Tạo user mới
     public UserResponse createUser(UserRequest request) {
         if (userRepository.existsByEmailIgnoreCase(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
         if (userRepository.existsByPhoneIgnoreCase(request.getPhone())) {
-            throw new RuntimeException("Phone already exists");
+            throw new AppException(ErrorCode.PHONE_EXISTED);
         }
         User user = UserMapper.toEntity(request);
         userRepository.save(user);
@@ -39,10 +42,11 @@ public class UserService {
     }
 
     // Tìm user theo username
-    public UserResponse getUserByUsername(String username) {
-        User user = userRepository.findByUserName(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        return UserMapper.toResponse(user);
+    public List<UserResponse> searchUsersByUsername(String keyword) {
+        return userRepository.findByUserNameContainingIgnoreCase(keyword)
+                .stream()
+                .map(UserMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     //tim nguoi dung dua theo full name
@@ -54,15 +58,18 @@ public class UserService {
     }
 
     // Cập nhật user
-    public UserResponse updateUser(Long id, UserRequest request) {
+    public UserResponse updateUser(Long id, UserUpdateProfileRequest request) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        existingUser.setFullName(request.getFullName());
-        existingUser.setEmail(request.getEmail());
-        existingUser.setPhone(request.getPhone());
-        existingUser.setRoleID(request.getRole());
-        existingUser.setStatus(request.isStatus());
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        if (userRepository.existsByEmailIgnoreCase(request.getEmail())) {
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
+        }
+        if (userRepository.existsByPhoneIgnoreCase(request.getPhone())) {
+            throw new AppException(ErrorCode.PHONE_EXISTED);
+        }
+        if (request.getFullName() != null) existingUser.setFullName(request.getFullName());
+        if (request.getEmail() != null) existingUser.setEmail(request.getEmail());
+        if (request.getPhone() != null) existingUser.setPhone(request.getPhone());
 
         userRepository.save(existingUser);
         return UserMapper.toResponse(existingUser);
@@ -71,7 +78,7 @@ public class UserService {
     // Xóa user
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)){
-            throw new RuntimeException("User not found");
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
         }
         userRepository.deleteById(id);
     }

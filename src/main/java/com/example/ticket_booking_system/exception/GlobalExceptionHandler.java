@@ -12,7 +12,7 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-//    // Bắt tất cả lỗi chưa được xử lý cụ thể
+    // Bắt tất cả lỗi chưa được xử lý cụ thể
 //    @ExceptionHandler(value = Exception.class)
 //    public ResponseEntity<ApiResponse> handleGeneralException(Exception exception) {
 //        ApiResponse apiResponse = ApiResponse.builder()
@@ -21,7 +21,18 @@ public class GlobalExceptionHandler {
 //                .build();
 //        return ResponseEntity.badRequest().body(apiResponse);
 //    }
-//
+
+    //xu li cac exception rieng biet chua dinh dang
+//    @ExceptionHandler(value = Exception.class)
+//    public ResponseEntity<ApiResponse> handleGeneralException(Exception exception) {
+//        ApiResponse apiResponse = ApiResponse.builder()
+//                .code(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode())
+//                .message(exception.getMessage()) // <-- quan trọng để hiện thông báo thật
+//                .build();
+//        return ResponseEntity.badRequest().body(apiResponse);
+//    }
+
+
     // Bắt lỗi do mình custom bằng AppException
     @ExceptionHandler(value = AppException.class)
     public ResponseEntity<ApiResponse> handleAppException(AppException exception) {

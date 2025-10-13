@@ -9,10 +9,13 @@ public enum ErrorCode {
     INVALID_PASSWORD(1004, "Password must be at least 8 characters"),
     SHOWTIME_NOT_FOUND(1005, "Showtime not found"),
     MISSING_MOVIE_ID(1006, "Missing movie ID to update"),
-    INVALID_STATUS( 1007,"Invalid movie status"),
-    THEATER_NOT_FOUND(1008, "Theater has not be found!"),
-    SHOWTIME_CONFLICT(1009, "Showtime is existed!")
-            ;
+    INVALID_STATUS(1007, "Invalid movie status"),
+    THEATER_NOT_FOUND(1008, "Theater has not been found!"),
+    SHOWTIME_CONFLICT(1009, "Showtime is existed!"),
+    EMAIL_EXISTED(1010, "Email already exists"),
+    PHONE_EXISTED(1011, "Phone already exists"),
+    USER_NOT_FOUND(1012, "User not found");
+
     private final int code;
     private final String message;
 
