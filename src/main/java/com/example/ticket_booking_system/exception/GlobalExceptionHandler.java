@@ -11,7 +11,7 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-// end
+
 //    // Bắt tất cả lỗi chưa được xử lý cụ thể
 //    @ExceptionHandler(value = Exception.class)
 //    public ResponseEntity<ApiResponse> handleGeneralException(Exception exception) {
