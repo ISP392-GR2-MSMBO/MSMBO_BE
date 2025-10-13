@@ -23,7 +23,7 @@ import com.example.ticket_booking_system.dto.reponse.movie.MovieResponse;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/movies")
-@CrossOrigin(origins = "http://localhost:5173") // cần thêm khi nối React
+@CrossOrigin(origins = "http://localhost:3000") // cần thêm khi nối React
 public class MovieController {
     private final MovieService movieService;
     private final ShowtimeService showtimeService;
