@@ -12,16 +12,16 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-////    // Bắt tất cả lỗi chưa được xử lý cụ thể
-////    @ExceptionHandler(value = Exception.class)
-////    public ResponseEntity<ApiResponse> handleGeneralException(Exception exception) {
-////        ApiResponse apiResponse = ApiResponse.builder()
-////                .code(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode())
-////                .message(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage())
-////                .build();
-////        return ResponseEntity.badRequest().body(apiResponse);
-////    }
-////
+//    // Bắt tất cả lỗi chưa được xử lý cụ thể
+//    @ExceptionHandler(value = Exception.class)
+//    public ResponseEntity<ApiResponse> handleGeneralException(Exception exception) {
+//        ApiResponse apiResponse = ApiResponse.builder()
+//                .code(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode())
+//                .message(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage())
+//                .build();
+//        return ResponseEntity.badRequest().body(apiResponse);
+//    }
+//
     // Bắt lỗi do mình custom bằng AppException
     @ExceptionHandler(value = AppException.class)
     public ResponseEntity<ApiResponse> handleAppException(AppException exception) {
@@ -32,23 +32,23 @@ public class GlobalExceptionHandler {
                 .build();
         return ResponseEntity.badRequest().body(apiResponse);
     }
-////
-////    // Bắt lỗi validation (nếu có sử dụng @Valid)
-////    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-////    public ResponseEntity<ApiResponse> handleValidation(MethodArgumentNotValidException exception) {
-////        String enumKey = exception.getFieldError().getDefaultMessage();
-////        ErrorCode errorCode = ErrorCode.UNCATEGORIZED_EXCEPTION; // Default error code
-////        try {
-////            errorCode = ErrorCode.valueOf(enumKey);
-////        } catch (IllegalArgumentException e) {
-////            // Không khớp thì giữ UNCATEGORIZED_EXCEPTION mặc định
-////        }
-////        ApiResponse apiResponse = ApiResponse.builder()
-////                .code(errorCode.getCode())
-////                .message(errorCode.getMessage())
-////                .build();
-////        return ResponseEntity.badRequest().body(apiResponse);
-////    }
+//
+//    // Bắt lỗi validation (nếu có sử dụng @Valid)
+//    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+//    public ResponseEntity<ApiResponse> handleValidation(MethodArgumentNotValidException exception) {
+//        String enumKey = exception.getFieldError().getDefaultMessage();
+//        ErrorCode errorCode = ErrorCode.UNCATEGORIZED_EXCEPTION; // Default error code
+//        try {
+//            errorCode = ErrorCode.valueOf(enumKey);
+//        } catch (IllegalArgumentException e) {
+//            // Không khớp thì giữ UNCATEGORIZED_EXCEPTION mặc định
+//        }
+//        ApiResponse apiResponse = ApiResponse.builder()
+//                .code(errorCode.getCode())
+//                .message(errorCode.getMessage())
+//                .build();
+//        return ResponseEntity.badRequest().body(apiResponse);
+//    }
 @ExceptionHandler(MethodArgumentNotValidException.class)
 public ResponseEntity<?> handleValidation(MethodArgumentNotValidException ex) {
     Map<String, String> errors = new HashMap<>();
