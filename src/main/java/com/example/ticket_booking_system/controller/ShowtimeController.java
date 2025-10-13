@@ -16,7 +16,7 @@ import java.util.List;
 
     @RestController
     @RequestMapping("/showtimes")
-//@CrossOrigin(origins = "http://localhost:3000") // thêm khi nối React
+    @CrossOrigin(origins = "http://localhost:3000") // thêm khi nối React
     public class ShowtimeController {
 
         private final ShowtimeService showtimeService;
@@ -36,36 +36,12 @@ import java.util.List;
             return result;
         }
 
-        // ✅ Lấy showtime theo ID
-        @GetMapping("/{id}")
-        public ShowtimeResponse getShowtimeById(@PathVariable Long id) {
-            Showtime showtime = showtimeService.getShowtimeById(id);
-            return ShowtimeMapper.toResponse(showtime);
-        }
-
-        // ✅ Tìm kiếm theo movieId
-        @GetMapping("/search")
-        public ResponseEntity<?> searchShowtimes(@RequestParam Long movieId) {
-            var list = showtimeService.findByMovieId(movieId);
-            if (list.isEmpty()) {
-                throw new AppException(ErrorCode.SHOWTIME_NOT_FOUND);
-            }
-            List<ShowtimeResponse> result = new ArrayList<>();
-            for (Showtime s : list) {
-                result.add(ShowtimeMapper.toResponse(s));
-            }
-            return ResponseEntity.ok(result);
-        }
-        @GetMapping("/search-by-name")
-        public ResponseEntity<?> searchByMovieName(@RequestParam String q) {
-            var list = showtimeService.findByMovieName(q);
-            var result = new java.util.ArrayList<ShowtimeResponse>();
-            for (var s : list) {
-                result.add(ShowtimeMapper.toResponse(s));
-            }
-            return ResponseEntity.ok(result);
-        }
-
+//        // ✅ Lấy showtime theo ID
+//        @GetMapping("/{id}")
+//        public ShowtimeResponse getShowtimeById(@PathVariable Long id) {
+//            Showtime showtime = showtimeService.getShowtimeById(id);
+//            return ShowtimeMapper.toResponse(showtime);
+//        }
         // ✅ Thêm showtime mới
         @PostMapping
         public ShowtimeResponse createShowtime(@Valid @RequestBody ShowtimeRequest request) {

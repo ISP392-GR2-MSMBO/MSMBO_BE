@@ -23,7 +23,7 @@ import com.example.ticket_booking_system.dto.reponse.movie.MovieResponse;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/movies")
-//@CrossOrigin(origins = "http://localhost:3000") // cần thêm khi nối React
+@CrossOrigin(origins = "http://localhost:3000") // cần thêm khi nối React
 public class MovieController {
     private final MovieService movieService;
     private final ShowtimeService showtimeService;
@@ -42,16 +42,16 @@ public class MovieController {
         Movie m = movieService.getMovie(movieId);
         return modelMapper.map(m, MovieResponse.class);
     }
-//    // ✅ (Tuỳ chọn) Lọc theo status: /movies/search?status=Now%20Showing
-//    @GetMapping(value = "/search", params = "status")
-//    public ResponseEntity<?> searchByStatus(@RequestParam String status) {
-//        List<Movie> movies = movieService.findByStatus(status);
-//        if (movies.isEmpty()) throw new AppException(ErrorCode.MOVIE_NOT_FOUND);
-//        List<MovieResponse> res = movies.stream()
-//                .map(m -> modelMapper.map(m, MovieResponse.class))
-//                .toList();
-//        return ResponseEntity.ok(res);
-//    }
+
+    // 1) Chỉ khi CÓ status và KHÔNG CÓ name
+    @GetMapping(value = "/searchStatus", params = "status")
+    public ResponseEntity<?> searchByStatus(@RequestParam String status) {
+        var movies = movieService.findByStatus(status);
+        if (movies.isEmpty()) throw new AppException(ErrorCode.MOVIE_NOT_FOUND);
+        var res = movies.stream().map(m -> modelMapper.map(m, MovieResponse.class)).toList();
+        return ResponseEntity.ok(res);
+    }
+
 
     @GetMapping(value = "/search", params = "name")
     public ResponseEntity<?> searchMovies(@RequestParam String name) {
