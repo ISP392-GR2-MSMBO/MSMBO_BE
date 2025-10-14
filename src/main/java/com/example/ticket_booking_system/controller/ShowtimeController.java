@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
     @RestController
-    @RequestMapping("/showtimes")
+    @RequestMapping("/api/showtime")
     @CrossOrigin(origins = "http://localhost:3000") // thêm khi nối React
     public class ShowtimeController {
 
@@ -26,7 +26,7 @@ import java.util.List;
             this.showtimeService = showtimeService;
         }
 
-        // ✅ Lấy tất cả showtimes
+        // Lấy tất cả showtime
         @GetMapping
         public List<ShowtimeResponse> getAllShowtimes() {
             List<ShowtimeResponse> result = new ArrayList<>();
@@ -36,13 +36,13 @@ import java.util.List;
             return result;
         }
 
-//        // ✅ Lấy showtime theo ID
+//        // Lấy showtime theo ID
 //        @GetMapping("/{id}")
 //        public ShowtimeResponse getShowtimeById(@PathVariable Long id) {
 //            Showtime showtime = showtimeService.getShowtimeById(id);
 //            return ShowtimeMapper.toResponse(showtime);
 //        }
-        // ✅ Thêm showtime mới
+        // Thêm showtime mới
         @PostMapping
         public ShowtimeResponse createShowtime(@Valid @RequestBody ShowtimeRequest request) {
             Showtime toSave = ShowtimeMapper.toEntity(request);
@@ -50,14 +50,14 @@ import java.util.List;
             return ShowtimeMapper.toResponse(saved);
         }
 
-        // ✅ Cập nhật showtime
+        // Cập nhật showtime
         @PutMapping("/{id}")
         public ResponseEntity<ShowtimeResponse> updateShowtime(@PathVariable Long id,@Valid @RequestBody ShowtimeRequest request) {
             Showtime updated = showtimeService.updateShowtime(id, ShowtimeMapper.toEntity(request));
             return ResponseEntity.ok(ShowtimeMapper.toResponse(updated));
         }
 
-        // ✅ Xoá showtime
+        // Xoá showtime
         @DeleteMapping("/{id}")
         public ResponseEntity<Void> deleteShowtime(@PathVariable Long id) {
             showtimeService.deleteShowtime(id);

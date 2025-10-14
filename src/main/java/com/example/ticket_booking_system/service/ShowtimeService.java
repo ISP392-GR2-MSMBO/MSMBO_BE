@@ -3,7 +3,9 @@ package com.example.ticket_booking_system.service;
 import com.example.ticket_booking_system.entity.Showtime;
 import com.example.ticket_booking_system.exception.AppException;
 import com.example.ticket_booking_system.exception.ErrorCode;
+import com.example.ticket_booking_system.repository.MovieRepository;
 import com.example.ticket_booking_system.repository.ShowtimeRepository;
+import com.example.ticket_booking_system.repository.TheaterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ShowtimeService {
     private final ShowtimeRepository showtimeRepository;
+    private final TheaterRepository theaterRepository;
+    private final MovieRepository movieRepository;
     //  List all showtime
     public List<Showtime> getAllShowtimes() {
         List<Showtime> showtimes = showtimeRepository.findAll();
@@ -30,8 +34,14 @@ public class ShowtimeService {
 //    }
     //  Add new showtime
     public Showtime saveShowtime(Showtime showtime) {
-        if (showtime.getTheater() == null || showtime.getTheater().getTheaterID() == null) {
-            throw new AppException(ErrorCode.THEATER_NOT_FOUND);
+        Long theaterId = showtime.getTheater().getTheaterID();
+        if (theaterId == null || !theaterRepository.existsById(theaterId)) {
+            throw new AppException(ErrorCode.THEATER_NOT_FOUND); //  Lúc này sẽ quăng lỗi
+        }
+        //  Kiểm tra movie tồn tại
+        if (showtime.getMovie() == null || showtime.getMovie().getMovieID() == null ||
+                !movieRepository.existsById(showtime.getMovie().getMovieID())) {
+            throw new AppException(ErrorCode.MOVIE_NOT_FOUND);
         }
         // trùng giờ trong cùng rạp & cùng ngày (overlap)
         boolean conflict = showtimeRepository.existsOverlap(
