@@ -1,6 +1,7 @@
 package com.example.ticket_booking_system.exception;
 
-import com.example.ticket_booking_system.dto.request.movie.ApiResponse;
+import com.example.ticket_booking_system.dto.request.movie.AppResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
-
+@Hidden
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -24,13 +25,13 @@ public class GlobalExceptionHandler {
 //
     // Bắt lỗi do mình custom bằng AppException
     @ExceptionHandler(value = AppException.class)
-    public ResponseEntity<ApiResponse> handleAppException(AppException exception) {
+    public ResponseEntity<AppResponse> handleAppException(AppException exception) {
         ErrorCode errorCode = exception.getErrorCode();
-        ApiResponse apiResponse = ApiResponse.builder()
+        AppResponse appResponse = AppResponse.builder()
                 .code(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .build();
-        return ResponseEntity.badRequest().body(apiResponse);
+        return ResponseEntity.badRequest().body(appResponse);
     }
 //
 //    // Bắt lỗi validation (nếu có sử dụng @Valid)
