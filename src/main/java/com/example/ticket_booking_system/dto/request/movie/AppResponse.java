@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ApiResponse<T> {
+public class AppResponse<T> {
     @Builder.Default
     private int code = 1000;
     private String message;

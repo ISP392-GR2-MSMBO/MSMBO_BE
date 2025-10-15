@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
     @RestController
-    @RequestMapping("/showtimes")
+    @RequestMapping("/api/showtime")
     @CrossOrigin(origins = "http://localhost:3000") // thêm khi nối React
     public class ShowtimeController {
 
@@ -26,7 +26,7 @@ import java.util.List;
             this.showtimeService = showtimeService;
         }
 
-        // Lấy tất cả showtimes
+        // Lấy tất cả showtime
         @GetMapping
         public List<ShowtimeResponse> getAllShowtimes() {
             List<ShowtimeResponse> result = new ArrayList<>();
