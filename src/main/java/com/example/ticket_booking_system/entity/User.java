@@ -36,5 +36,5 @@ public class User {
     private Role roleID; // AD, MA, ST, CUS
 
     @Column(nullable = false)
-    private boolean status; // true = active, false = inactive
+    private boolean status = true; // true = active, false = inactive
 }

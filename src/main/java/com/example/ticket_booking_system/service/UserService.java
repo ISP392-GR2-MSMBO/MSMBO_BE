@@ -41,21 +41,34 @@ public class UserService {
         return UserMapper.toResponse(user);
     }
 
-    // Tìm user theo username
+    // 🔍 Tìm người dùng theo username
     public List<UserResponse> searchUsersByUsername(String keyword) {
-        return userRepository.findByUserNameContainingIgnoreCase(keyword)
+        List<UserResponse> users = userRepository.findByUserNameContainingIgnoreCase(keyword)
                 .stream()
                 .map(UserMapper::toResponse)
                 .collect(Collectors.toList());
+
+        if (users.isEmpty()) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        return users;
     }
 
-    //tim nguoi dung dua theo full name
+    // 🔍 Tìm người dùng theo full name
     public List<UserResponse> searchUsersByFullName(String keyword) {
-        return userRepository.findByFullNameContainingIgnoreCase(keyword)
+        List<UserResponse> users = userRepository.findByFullNameContainingIgnoreCase(keyword)
                 .stream()
                 .map(UserMapper::toResponse)
                 .collect(Collectors.toList());
+
+        if (users.isEmpty()) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        return users;
     }
+
 
     // Cập nhật user
     public UserResponse updateUser(Long id, UserUpdateProfileRequest request) {
