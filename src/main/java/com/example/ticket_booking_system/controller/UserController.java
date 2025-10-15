@@ -26,13 +26,13 @@ public class UserController {
     }
 
     // Lấy user theo username
-    @GetMapping("/search/username")
+    @GetMapping("/userName")
     public ResponseEntity<List<UserResponse>> searchUsersByUsername(@RequestParam String keyword) {
         return ResponseEntity.ok(userService.searchUsersByUsername(keyword));
     }
 
     //search fullname
-    @GetMapping("/search/fullName")
+    @GetMapping("/fullName")
     public ResponseEntity<List<UserResponse>> searchUsers(@RequestParam String keyword) {
         return ResponseEntity.ok(userService.searchUsersByFullName(keyword));
     }
@@ -44,14 +44,14 @@ public class UserController {
     }
 
     // Cập nhật thông tin user theo ID
-    @PutMapping("/updateUser/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserUpdateProfileRequest request) {
         return ResponseEntity.ok(userService.updateUser(id, request));
     }
 
 
     // Xóa user theo ID
-    @DeleteMapping("/deleteUser/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok("User deleted successfully");

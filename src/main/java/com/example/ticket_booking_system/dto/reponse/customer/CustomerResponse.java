@@ -13,10 +13,12 @@ import java.time.LocalDate;
 public class CustomerResponse {
     private Long customerID;
     private Long userID;
+    private String userName;
     private String fullName;
     private String email;
     private String phone;
     private LocalDate dateOfBirth;
     private String gender;
     private String address;
+    private boolean status;
 }
