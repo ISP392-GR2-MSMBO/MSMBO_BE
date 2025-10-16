@@ -2,6 +2,7 @@ package com.example.ticket_booking_system.dto.request.showtime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -17,7 +18,8 @@ public class ShowtimeRequest {
     //private Long showtimeID;
     private Long theaterID;
     private Long movieID;
-    @NotNull
+    @NotNull(message = "Date cannot be null")
+    @FutureOrPresent(message = "Date must be today or in the future")
     private LocalDate date;
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")

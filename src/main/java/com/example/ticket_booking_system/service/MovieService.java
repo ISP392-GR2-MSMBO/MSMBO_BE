@@ -19,8 +19,11 @@ public class MovieService {
     /*public Optional<Movie> getMovieById(Long id){
         return movieRepository.findById(id);
     }*/
+//    public List<Movie> getAllMovies() {
+//        return movieRepository.findAll();
+//    }
     public List<Movie> getAllMovies() {
-        return movieRepository.findAll();
+        return movieRepository.findByIsDeletedFalse();
     }
 
     public Movie getMovie(Long movieId) {
@@ -110,9 +113,12 @@ public class MovieService {
 
     // Xóa movie
     public void deleteMovie(Long id){
-        if (!movieRepository.existsById(id)) {
-            throw new AppException(ErrorCode.MOVIE_NOT_FOUND);
+        Movie movie = movieRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
+        if (movie.isDeleted()) {
+            throw new AppException(ErrorCode.MOVIE_ALREADY_DELETED); // Tạo thêm error code nếu muốn
         }
-        movieRepository.deleteById(id);
+        movie.setDeleted(true); // Đánh dấu là đã xóa
+        movieRepository.save(movie); // Lưu lại
     }
 }
