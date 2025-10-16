@@ -15,4 +15,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     // Thêm phương thức tìm kiếm gần đúng (LIKE)
     List<Movie> findByMovieNameContainingIgnoreCase(String keyword);
     List<Movie> findByStatusIgnoreCase(@Param("status")String status);
+    List<Movie> findByIsDeletedFalse();
+    Optional<Movie> findByMovieIDAndIsDeletedFalse(Long movieID);
+    // Thêm dòng này để kiểm tra tồn tại movie chưa bị xóa
+    boolean existsByMovieIDAndIsDeletedFalse(Long movieID);
 }
