@@ -1,11 +1,13 @@
 package com.example.ticket_booking_system.exception;
 
+import org.aspectj.apache.bcel.classfile.Code;
+
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error"),
     MOVIE_EXISTED(1000, "Movie is existed!"),
     MOVIE_NOT_FOUND(1001, "Movie is not found!"),
     USER_EXISTED(1002, "User existed"),
-    USERNAME_INVALID(1003, "Username must be at least 3 characters"),
+    USERNAME_EXISTED(1003, "Username existed"),
     INVALID_PASSWORD(1004, "Password must be at least 8 characters"),
     SHOWTIME_NOT_FOUND(1005, "Showtime not found"),
     MISSING_MOVIE_ID(1006, "Missing movie ID to update"),
@@ -14,7 +16,9 @@ public enum ErrorCode {
     SHOWTIME_CONFLICT(1009, "Showtime is existed!"),
     EMAIL_EXISTED(1010, "Email already exists"),
     PHONE_EXISTED(1011, "Phone already exists"),
-    USER_NOT_FOUND(1012, "User not found");
+    USER_NOT_FOUND(1012, "User not found"),
+    CUSTOMER_NOT_FOUND(1013, "Customer not found"); {
+    }
 
     private final int code;
     private final String message;
