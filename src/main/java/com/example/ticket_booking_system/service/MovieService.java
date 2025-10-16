@@ -1,6 +1,7 @@
 package com.example.ticket_booking_system.service;
 
 
+import com.example.ticket_booking_system.Enum.Approve;
 import com.example.ticket_booking_system.entity.Movie;
 import com.example.ticket_booking_system.exception.AppException;
 import com.example.ticket_booking_system.exception.ErrorCode;
@@ -23,11 +24,11 @@ public class MovieService {
 //        return movieRepository.findAll();
 //    }
     public List<Movie> getAllMovies() {
-        return movieRepository.findByIsDeletedFalse();
+        return movieRepository.findAll();
     }
 
     public Movie getMovie(Long movieId) {
-        return movieRepository.findById(movieId)
+        return movieRepository.findByMovieIDAndIsDeletedFalseAndIsPublishedTrue(movieId)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
     }
 
@@ -75,6 +76,9 @@ public class MovieService {
         movie.setStatus(normalizeStatus(movie.getStatus()));
         if (movie.getStatus() == null || movie.getStatus().isBlank()) {
             movie.setStatus("Coming Soon");
+            movie.setApproveStatus(Approve.PENDING);
+            movie.setPublished(false);
+            movie.setDeleted(false);
         } else {
             switch (movie.getStatus().trim().toLowerCase()) {
                 case "now showing" -> movie.setStatus("Now Showing");
@@ -85,7 +89,6 @@ public class MovieService {
         }
         return movieRepository.save(movie);
     }
-
     // Cập nhật movie
     public Movie updateMovie(Long id, @NonNull Movie movieDetails) {
         if (id == null) {
@@ -94,7 +97,7 @@ public class MovieService {
         Movie existingMovie = movieRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
 
-        // ✅ Sử dụng Builder pattern với toBuilder()
+        // Sử dụng Builder pattern với toBuilder()
         Movie updatedMovie = existingMovie.toBuilder()
                 .movieName(movieDetails.getMovieName())
                 .genre(movieDetails.getGenre())
@@ -106,8 +109,9 @@ public class MovieService {
                 .language(movieDetails.getLanguage())
                 .description(movieDetails.getDescription())
                 .status(normalizeStatus(movieDetails.getStatus()))
+                .approveStatus(Approve.PENDING)
+                .isPublished(false)
                 .build();
-
         return movieRepository.save(updatedMovie);
     }
 
@@ -118,7 +122,27 @@ public class MovieService {
         if (movie.isDeleted()) {
             throw new AppException(ErrorCode.MOVIE_ALREADY_DELETED); // Tạo thêm error code nếu muốn
         }
-        movie.setDeleted(true); // Đánh dấu là đã xóa
+        movie.setDeleted(true);
+        movie.setPublished(false);// Đánh dấu là đã xóa
         movieRepository.save(movie); // Lưu lại
+
+    }
+    // ===== Admin actions =====
+    public Movie approveMovie(Long id) {
+        Movie m = movieRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
+        if (m.isDeleted()) throw new AppException(ErrorCode.MOVIE_DELETED_OR_INACTIVE);
+        m.setApproveStatus(com.example.ticket_booking_system.Enum.Approve.APPROVE);
+        m.setPublished(true);
+        return movieRepository.save(m);
+    }
+
+    public Movie rejectMovie(Long id) {
+        Movie m = movieRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
+        if (m.isDeleted()) throw new AppException(ErrorCode.MOVIE_DELETED_OR_INACTIVE);
+        m.setApproveStatus(com.example.ticket_booking_system.Enum.Approve.DENIED);
+        m.setPublished(false);
+        return movieRepository.save(m);
     }
 }
