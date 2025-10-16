@@ -17,7 +17,12 @@ public enum ErrorCode {
     EMAIL_EXISTED(1010, "Email already exists"),
     PHONE_EXISTED(1011, "Phone already exists"),
     USER_NOT_FOUND(1012, "User not found"),
-    CUSTOMER_NOT_FOUND(1013, "Customer not found"); {
+    CUSTOMER_NOT_FOUND(1013, "Customer not found"),
+    MOVIE_ALREADY_DELETED(1014, "Movie has already been deleted"),
+    MOVIE_DELETED_OR_INACTIVE(1015, "Movie is deleted or inactive"),
+    SEAT_NOT_FOUND(1016, "Seat not found"),
+    SEAT_UNAVAILABLE_DUE_TO_DAMAGE(1017, "Cannot update seat to SOLD or EMPTY due to broken seat"),
+    INVALID_SEAT_STATUS_TRANSITION(1018, "Cannot transfer sold seat to empty seat");{
     }
 
     private final int code;
