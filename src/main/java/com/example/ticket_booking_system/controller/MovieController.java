@@ -82,4 +82,14 @@ public class MovieController {
         movieService.deleteMovie(id);
         return ResponseEntity.noContent().build();
     }
+    // ==== Admin endpoints (tối giản) ====
+    @PostMapping("/{id}/approve")
+    public MovieResponse approve(@PathVariable Long id) {
+        return MovieMapper.toResponse(movieService.approveMovie(id));
+    }
+
+    @PostMapping("/{id}/reject")
+    public MovieResponse reject(@PathVariable Long id) {
+        return MovieMapper.toResponse(movieService.rejectMovie(id));
+    }
 }
