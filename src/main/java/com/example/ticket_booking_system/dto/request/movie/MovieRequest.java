@@ -28,6 +28,8 @@ public class MovieRequest {
     private LocalDate releaseDate;
     private String language;
     private String description;
+    private String poster;
+    private String trailer;
     private String status;
 }
 
