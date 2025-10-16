@@ -36,6 +36,10 @@ public class Movie {
     @Column(columnDefinition = "TEXT")
     private String description;
     @Column
+    private String poster;
+    @Column
+    private String trailer;
+    @Column
     private String status;
     @Column(name = "is_deleted", nullable = false)
     @Builder.Default
