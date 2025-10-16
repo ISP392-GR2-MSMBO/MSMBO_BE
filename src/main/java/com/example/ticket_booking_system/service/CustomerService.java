@@ -50,17 +50,17 @@ public class CustomerService {
         return CustomerMapper.toResponse(customer);
     }
 
-    // 🟡 READ (View profile)
+    //  READ (View profile)
     public CustomerResponse getCustomerProfile(Long userId) {
         Customer customer = customerRepository.findByUser_UserID(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.CUSTOMER_NOT_FOUND));
         return CustomerMapper.toResponse(customer);
     }
 
-    // 🟠 UPDATE (Edit profile)
+    //  UPDATE (Edit profile)
     public CustomerResponse updateProfile(Long userId, CustomerUpdateProfileRequest request) {
         Customer existing = customerRepository.findByUser_UserID(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.CUSTOMER_NOT_FOUND));
         User existingUser = existing.getUser();
 
         if (request.getEmail() != null &&
@@ -89,10 +89,10 @@ public class CustomerService {
         return CustomerMapper.toResponse(existing);
     }
 
-    // 🔴 DELETE (Soft delete: set status = false)
+    // DELETE (Soft delete: set status = false)
     public void deleteCustomer(Long userId) {
         Customer customer = customerRepository.findByUser_UserID(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new AppException(ErrorCode.CUSTOMER_NOT_FOUND));
         User user = customer.getUser();
 
         user.setStatus(false); // set inactive
