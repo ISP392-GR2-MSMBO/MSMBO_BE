@@ -36,4 +36,7 @@ public class Movie {
     private String description;
     @Column
     private String status;
+    @Column(name = "is_deleted", nullable = false)
+    @Builder.Default
+    private boolean isDeleted = false; // default là chưa xóa
 }
