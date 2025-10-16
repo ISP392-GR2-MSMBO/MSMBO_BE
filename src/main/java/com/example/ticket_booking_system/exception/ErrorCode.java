@@ -15,8 +15,8 @@ public enum ErrorCode {
     EMAIL_EXISTED(1010, "Email already exists"),
     PHONE_EXISTED(1011, "Phone already exists"),
     USER_NOT_FOUND(1012, "User not found"),
-    MOVIE_ALREADY_DELETED(1013, "Movie has already been deleted"),
-    MOVIE_DELETED_OR_INACTIVE(1014, "Movie is deleted or inactive");
+    MOVIE_ALREADY_DELETED(1014, "Movie has already been deleted"),
+    MOVIE_DELETED_OR_INACTIVE(1015, "Movie is deleted or inactive");
 
     private final int code;
     private final String message;
