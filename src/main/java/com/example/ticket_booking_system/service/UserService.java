@@ -30,6 +30,9 @@ public class UserService {
 
     // Tạo user mới
     public UserResponse createUser(UserRequest request) {
+        if (userRepository.existsByUserNameIgnoreCase(request.getUserName())) {
+            throw new AppException(ErrorCode.USERNAME_EXISTED);
+        }
         if (userRepository.existsByEmailIgnoreCase(request.getEmail())) {
             throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
@@ -41,7 +44,7 @@ public class UserService {
         return UserMapper.toResponse(user);
     }
 
-    // 🔍 Tìm người dùng theo username
+    // Tìm người dùng theo username
     public List<UserResponse> searchUsersByUsername(String keyword) {
         List<UserResponse> users = userRepository.findByUserNameContainingIgnoreCase(keyword)
                 .stream()
@@ -55,7 +58,7 @@ public class UserService {
         return users;
     }
 
-    // 🔍 Tìm người dùng theo full name
+    // Tìm người dùng theo full name
     public List<UserResponse> searchUsersByFullName(String keyword) {
         List<UserResponse> users = userRepository.findByFullNameContainingIgnoreCase(keyword)
                 .stream()

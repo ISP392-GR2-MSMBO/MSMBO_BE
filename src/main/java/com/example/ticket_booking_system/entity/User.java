@@ -37,4 +37,5 @@ public class User {
 
     @Column(nullable = false)
     private boolean status = true; // true = active, false = inactive
+//    private boolean isDelete;
 }

@@ -1,5 +1,6 @@
 package com.example.ticket_booking_system.service;
 
+import com.example.ticket_booking_system.entity.Movie;
 import com.example.ticket_booking_system.entity.Showtime;
 import com.example.ticket_booking_system.exception.AppException;
 import com.example.ticket_booking_system.exception.ErrorCode;
@@ -38,11 +39,12 @@ public class ShowtimeService {
         if (theaterId == null || !theaterRepository.existsById(theaterId)) {
             throw new AppException(ErrorCode.THEATER_NOT_FOUND); //  Lúc này sẽ quăng lỗi
         }
-        //  Kiểm tra movie tồn tại
-        if (showtime.getMovie() == null || showtime.getMovie().getMovieID() == null ||
-                !movieRepository.existsById(showtime.getMovie().getMovieID())) {
+        // 2) Movie phải tồn tại và chưa bị xóa mềm
+        if (showtime.getMovie() == null || showtime.getMovie().getMovieID() == null) {
             throw new AppException(ErrorCode.MOVIE_NOT_FOUND);
         }
+        Movie movie = movieRepository.findByMovieIDAndIsDeletedFalse(showtime.getMovie().getMovieID())
+                .orElseThrow(() -> new AppException(ErrorCode.MOVIE_DELETED_OR_INACTIVE));
         // trùng giờ trong cùng rạp & cùng ngày (overlap)
         boolean conflict = showtimeRepository.existsOverlap(
                 showtime.getTheater().getTheaterID(),
@@ -59,6 +61,22 @@ public class ShowtimeService {
 
     //  Update new showtime
     public Showtime updateShowtime(Long id, Showtime updatedShowtime) {
+        Long theaterId = updatedShowtime.getTheater().getTheaterID();
+        if (theaterId == null || !theaterRepository.existsById(theaterId)) {
+            throw new AppException(ErrorCode.THEATER_NOT_FOUND); //  Lúc này sẽ quăng lỗi
+        }
+        //  Kiểm tra movie tồn tại
+        if (updatedShowtime.getMovie() == null || updatedShowtime.getMovie().getMovieID() == null ||
+                !movieRepository.existsById(updatedShowtime.getMovie().getMovieID())) {
+            throw new AppException(ErrorCode.MOVIE_NOT_FOUND);
+        }
+        Long movieId = updatedShowtime.getMovie().getMovieID();
+
+        // Movie phải còn hoạt động (chưa bị delete mềm)
+        boolean movieActive = movieRepository.existsByMovieIDAndIsDeletedFalse(movieId);
+        if (!movieActive) {
+            throw new AppException(ErrorCode.MOVIE_DELETED_OR_INACTIVE);
+        }
         Showtime existing = showtimeRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.SHOWTIME_NOT_FOUND));
 
