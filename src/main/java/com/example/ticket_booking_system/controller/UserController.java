@@ -45,7 +45,7 @@ public class UserController {
 
     // Cập nhật thông tin user theo ID
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserUpdateProfileRequest request) {
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id,@Valid @RequestBody UserUpdateProfileRequest request) {
         return ResponseEntity.ok(userService.updateUser(id, request));
     }
 
