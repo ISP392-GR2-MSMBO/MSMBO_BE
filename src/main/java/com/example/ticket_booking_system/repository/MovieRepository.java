@@ -19,4 +19,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     Optional<Movie> findByMovieIDAndIsDeletedFalse(Long movieID);
     // Thêm dòng này để kiểm tra tồn tại movie chưa bị xóa
     boolean existsByMovieIDAndIsDeletedFalse(Long movieID);
+    // dùng cho public (đã publish & chưa xóa)
+    //List<Movie> findByIsDeletedFalseAndIsPublishedTrue();
+    Optional<Movie> findByMovieIDAndIsDeletedFalseAndIsPublishedTrue(Long movieID);
 }

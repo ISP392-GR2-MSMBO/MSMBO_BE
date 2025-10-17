@@ -16,6 +16,8 @@ public class MovieMapper {
         movie.setReleaseDate(request.getReleaseDate());
         movie.setLanguage(request.getLanguage());
         movie.setDescription(request.getDescription());
+        movie.setPoster(request.getPoster());
+        movie.setTrailer(request.getTrailer());
         movie.setStatus(request.getStatus());
         return movie;
     }
@@ -32,7 +34,10 @@ public class MovieMapper {
         res.setReleaseDate(movie.getReleaseDate());
         res.setLanguage(movie.getLanguage());
         res.setDescription(movie.getDescription());
+        res.setPoster(movie.getPoster());
+        res.setTrailer(movie.getTrailer());
         res.setStatus(movie.getStatus());
+        res.setApproveStatus(movie.getApproveStatus());
         return res;
     }
 }
