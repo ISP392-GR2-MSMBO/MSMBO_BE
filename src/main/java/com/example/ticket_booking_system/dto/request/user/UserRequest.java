@@ -10,8 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
 public class UserRequest {
     @NotBlank(message = "Username cannot be blank")
     private String userName;
@@ -29,6 +27,6 @@ public class UserRequest {
     @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be exactly 10 digits")
     @NotBlank(message = "Phone cannot be blank")
     private String phone;
-    private Role role;  // AD, MA, ST, CUS
+    private Role roleID;  // AD, MA, ST, CUS
     private boolean status;
 }
