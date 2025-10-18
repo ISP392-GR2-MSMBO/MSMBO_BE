@@ -96,7 +96,6 @@ public class MovieService {
         }
         Movie existingMovie = movieRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
-
         // Sử dụng Builder pattern với toBuilder()
         Movie updatedMovie = existingMovie.toBuilder()
                 .movieName(movieDetails.getMovieName())
@@ -114,7 +113,27 @@ public class MovieService {
                 .build();
         return movieRepository.save(updatedMovie);
     }
-
+//    public Movie updatePoster(Long id, String posterUrl) {
+//        Movie movie = movieRepository.findById(id)
+//                .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
+//
+//        movie.setPoster(posterUrl);
+//        movie.setApproveStatus(Approve.PENDING); // cần admin duyệt lại
+//        movie.setPublished(false);
+//
+//        return movieRepository.save(movie);
+//    }
+//
+//    public Movie updateTrailer(Long id, String trailerUrl) {
+//        Movie movie = movieRepository.findById(id)
+//                .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
+//
+//        movie.setTrailer(trailerUrl);
+//        movie.setApproveStatus(Approve.PENDING);
+//        movie.setPublished(false);
+//
+//        return movieRepository.save(movie);
+//    }
     // Xóa movie
     public void deleteMovie(Long id){
         Movie movie = movieRepository.findById(id)

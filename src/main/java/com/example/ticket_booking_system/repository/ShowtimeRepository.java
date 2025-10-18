@@ -5,11 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import com.example.ticket_booking_system.Enum.Approve;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
@@ -24,4 +24,13 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
                           @Param("date") LocalDate date,
                           @Param("startTime") LocalTime startTime,
                           @Param("endTime") LocalTime endTime);
+    @Query("""
+      SELECT s FROM Showtime s
+      WHERE s.isPublished = true
+        AND s.approveStatus = Approve.APPROVE
+        AND s.movie.isDeleted = false
+        AND s.date >= :today
+      ORDER BY s.date, s.startTime
+    """)
+    List<Showtime> findPublicShowtime(LocalDate today);
 }

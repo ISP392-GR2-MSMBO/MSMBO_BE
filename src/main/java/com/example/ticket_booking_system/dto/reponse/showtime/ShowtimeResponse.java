@@ -1,5 +1,6 @@
 package com.example.ticket_booking_system.dto.reponse.showtime;
 
+import com.example.ticket_booking_system.Enum.Approve;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -23,4 +24,5 @@ public class ShowtimeResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     @Schema(example = "12:00")
     private LocalTime endTime;
+    private Approve approveStatus;
 }

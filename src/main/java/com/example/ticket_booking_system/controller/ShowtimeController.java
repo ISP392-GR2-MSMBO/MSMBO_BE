@@ -30,18 +30,12 @@ import java.util.List;
         @GetMapping
         public List<ShowtimeResponse> getAllShowtimes() {
             List<ShowtimeResponse> result = new ArrayList<>();
-            for (Showtime s : showtimeService.getAllShowtimes()) {
+            for (Showtime s : showtimeService.getPublicShowtimes()) {
                 result.add(ShowtimeMapper.toResponse(s));
             }
             return result;
         }
 
-//        // Lấy showtime theo ID
-//        @GetMapping("/{id}")
-//        public ShowtimeResponse getShowtimeById(@PathVariable Long id) {
-//            Showtime showtime = showtimeService.getShowtimeById(id);
-//            return ShowtimeMapper.toResponse(showtime);
-//        }
         // Thêm showtime mới
         @PostMapping
         public ShowtimeResponse createShowtime(@Valid @RequestBody ShowtimeRequest request) {
@@ -62,5 +56,17 @@ import java.util.List;
         public ResponseEntity<Void> deleteShowtime(@PathVariable Long id) {
             showtimeService.deleteShowtime(id);
             return ResponseEntity.noContent().build();
+        }
+        // ==== Admin endpoints (tối giản) cho Showtime ====
+        @PostMapping("/{id}/approve")
+        public ShowtimeResponse approveShowtime(@PathVariable Long id) {
+            var s = showtimeService.adminApproveOrDeny(id, true); // APPROVE & publish
+            return ShowtimeMapper.toResponse(s);
+        }
+
+        @PostMapping("/{id}/reject")
+        public ShowtimeResponse rejectShowtime(@PathVariable Long id) {
+            var s = showtimeService.adminApproveOrDeny(id, false); // DENIED & unpublish
+            return ShowtimeMapper.toResponse(s);
         }
     }
