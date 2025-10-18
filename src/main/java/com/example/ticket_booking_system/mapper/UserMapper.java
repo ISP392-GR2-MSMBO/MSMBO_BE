@@ -16,7 +16,7 @@ public class UserMapper {
         user.setPassword(request.getPassword());
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
-        user.setRoleID(request.getRole());
+        user.setRoleID(request.getRoleID());
         user.setStatus(request.isStatus());
         return user;
     }
@@ -31,7 +31,7 @@ public class UserMapper {
         response.setFullName(user.getFullName());
         response.setEmail(user.getEmail());
         response.setPhone(user.getPhone());
-        response.setRole(user.getRoleID());
+        response.setRoleID(user.getRoleID());
         response.setStatus(user.isStatus());
         return response;
     }

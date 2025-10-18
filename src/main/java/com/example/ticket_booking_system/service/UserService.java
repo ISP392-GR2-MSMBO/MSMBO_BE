@@ -75,17 +75,28 @@ public class UserService {
 
     // Cập nhật user
     public UserResponse updateUser(Long id, UserUpdateProfileRequest request) {
+        //rang buoc trung lap
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        if (userRepository.existsByEmailIgnoreCase(request.getEmail())) {
+        if (userRepository.existsByEmailIgnoreCase(request.getEmail())
+                && !existingUser.getEmail().equalsIgnoreCase(request.getEmail())) {
             throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
-        if (userRepository.existsByPhoneIgnoreCase(request.getPhone())) {
+        if (userRepository.existsByPhoneIgnoreCase(request.getPhone())
+                && !existingUser.getPhone().equalsIgnoreCase(request.getPhone())) {
             throw new AppException(ErrorCode.PHONE_EXISTED);
         }
-        if (request.getFullName() != null) existingUser.setFullName(request.getFullName());
-        if (request.getEmail() != null) existingUser.setEmail(request.getEmail());
-        if (request.getPhone() != null) existingUser.setPhone(request.getPhone());
+
+        // rang buoc de trong va null thi giu lai gia tri cu
+        if (request.getFullName() != null && !request.getFullName().isBlank()) {
+            existingUser.setFullName(request.getFullName());
+        }
+        if (request.getEmail() != null && !request.getEmail().isBlank()) {
+            existingUser.setEmail(request.getEmail());
+        }
+        if (request.getPhone() != null && !request.getPhone().isBlank()) {
+            existingUser.setPhone(request.getPhone());
+        }
 
         userRepository.save(existingUser);
         return UserMapper.toResponse(existingUser);
