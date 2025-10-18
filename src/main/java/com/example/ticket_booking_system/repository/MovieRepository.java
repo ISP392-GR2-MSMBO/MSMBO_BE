@@ -1,5 +1,6 @@
 package com.example.ticket_booking_system.repository;
 
+import com.example.ticket_booking_system.Enum.Approve;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.ticket_booking_system.entity.Movie;
 import org.springframework.data.repository.query.Param;
@@ -22,4 +23,5 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     // dùng cho public (đã publish & chưa xóa)
     //List<Movie> findByIsDeletedFalseAndIsPublishedTrue();
     Optional<Movie> findByMovieIDAndIsDeletedFalseAndIsPublishedTrue(Long movieID);
+    Optional<Movie> findByMovieIDAndIsDeletedFalseAndApproveStatus(Long id, Approve status);
 }
