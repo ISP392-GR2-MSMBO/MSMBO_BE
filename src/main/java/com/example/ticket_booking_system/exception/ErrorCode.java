@@ -8,7 +8,7 @@ public enum ErrorCode {
     MOVIE_NOT_FOUND(1001, "Movie is not found!"),
     USER_EXISTED(1002, "User existed"),
     USERNAME_EXISTED(1003, "Username existed"),
-    INVALID_PASSWORD(1004, "Password must be at least 8 characters"),
+    INVALID_PASSWORD(1004, "Wrong password"),
     SHOWTIME_NOT_FOUND(1005, "Showtime not found"),
     MISSING_MOVIE_ID(1006, "Missing movie ID to update"),
     INVALID_STATUS(1007, "Invalid movie status (Now showing||Coming soon||Ended)"),
