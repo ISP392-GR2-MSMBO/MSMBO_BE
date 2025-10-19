@@ -89,7 +89,7 @@ public class ShowtimeService {
     public Showtime updateShowtime(Long id, Showtime updatedShowtime) {
         Long theaterId = updatedShowtime.getTheater().getTheaterID();
         if (theaterId == null || !theaterRepository.existsById(theaterId)) {
-            throw new AppException(ErrorCode.THEATER_NOT_FOUND); //  Lúc này sẽ quăng lỗi
+            throw new AppException(ErrorCode.THEATER_NOT_FOUND);
         }
         Movie movies = requireApprovedActiveMovie(updatedShowtime.getMovie());
         Long movieId = updatedShowtime.getMovie().getMovieID();
