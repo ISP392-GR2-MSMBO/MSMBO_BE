@@ -1,6 +1,5 @@
 package com.example.ticket_booking_system.controller;
 
-import com.example.ticket_booking_system.entity.Showtime;
 import com.example.ticket_booking_system.exception.AppException;
 import com.example.ticket_booking_system.exception.ErrorCode;
 import com.example.ticket_booking_system.mapper.MovieMapper;
@@ -9,7 +8,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.example.ticket_booking_system.entity.Movie;
 import com.example.ticket_booking_system.service.MovieService;
@@ -75,7 +73,6 @@ public class MovieController {
         Movie updated = movieService.updateMovie(id, movie);
         return ResponseEntity.ok(MovieMapper.toResponse(updated));
     }
-
     // Xoá phim
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMovie(@PathVariable Long id) {
