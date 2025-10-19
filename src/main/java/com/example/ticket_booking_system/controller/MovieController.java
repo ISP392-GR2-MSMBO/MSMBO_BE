@@ -33,12 +33,6 @@ public class MovieController {
                 .toList();
     }
 
-    @GetMapping("/id/{movieID}")
-    public MovieResponse getMovie(@PathVariable("movieID") Long movieId) {
-        Movie m = movieService.getMovie(movieId);
-        return MovieMapper.toResponse(m);
-    }
-
     // 1) Chỉ khi CÓ status và KHÔNG CÓ name
     @GetMapping("/status/{status}")
     public ResponseEntity<?> searchByStatus(@PathVariable String status) {
