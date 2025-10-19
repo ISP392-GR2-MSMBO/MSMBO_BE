@@ -17,23 +17,23 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Long movieID;
-    @Column
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String movieName;
-    @Column
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String genre;
     @Column
     private int duration;
     @Column
     private String age;
-    @Column
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String director;
-    @Column
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String actress;
     @Column
     private LocalDate releaseDate;
-    @Column
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String language;
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String description;
     @Column
     private String poster;
