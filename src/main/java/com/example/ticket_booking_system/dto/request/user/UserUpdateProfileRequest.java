@@ -15,10 +15,10 @@ public class UserUpdateProfileRequest {
     private String fullName;
 
     @Email(message = "Invalid email format")
-    @NotBlank(message = "Email cannot be blank")
+    //@NotBlank(message = "Email cannot be blank")
     private String email;
 
-    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be exactly 10 digits")
-    @NotBlank(message = "Phone cannot be blank")
+    @Pattern(regexp = "^0[0-9]{9}$", message = "Phone number must be exactly 10 digits")
+    //@NotBlank(message = "Phone cannot be blank")
     private String phone;
 }
