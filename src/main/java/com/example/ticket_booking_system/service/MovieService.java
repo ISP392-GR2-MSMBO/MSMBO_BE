@@ -23,7 +23,7 @@ public class MovieService {
     }
 
     public Movie getMovie(Long movieId) {
-        return movieRepository.findByMovieIDAndIsDeletedFalseAndIsPublishedTrue(movieId)
+        return movieRepository.findById(movieId)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
     }
 
@@ -120,7 +120,6 @@ public class MovieService {
         movie.setDeleted(true);
         movie.setPublished(false);// Đánh dấu là đã xóa
         movieRepository.save(movie); // Lưu lại
-
     }
     // ===== Admin actions =====
     public Movie approveMovie(Long id) {

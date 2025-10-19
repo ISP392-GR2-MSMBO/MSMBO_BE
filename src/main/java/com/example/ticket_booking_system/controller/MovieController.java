@@ -41,7 +41,7 @@ public class MovieController {
 
     // 1) Chỉ khi CÓ status và KHÔNG CÓ name
     @GetMapping("/status/{status}")
-    public ResponseEntity<?> searchByStatus(@RequestParam String status) {
+    public ResponseEntity<?> searchByStatus(@PathVariable String status) {
         var movies = movieService.findByStatus(status);
         if (movies.isEmpty()) throw new AppException(ErrorCode.MOVIE_NOT_FOUND);
         var res = movies.stream().map(MovieMapper::toResponse).toList();
@@ -49,8 +49,8 @@ public class MovieController {
     }
 
 
-    @GetMapping("/name/{movieName}")
-    public ResponseEntity<?> searchMovies(@RequestParam String name) {
+    @GetMapping("/{name}")
+    public ResponseEntity<?> searchMovies(@PathVariable  String name) {
         List<Movie> movies = movieService.searchMoviesByKeyword(name);
         if (movies.isEmpty()) throw new AppException(ErrorCode.MOVIE_NOT_FOUND);
         List<MovieResponse> res = movies.stream()
