@@ -23,8 +23,8 @@ public enum ErrorCode {
     SEAT_NOT_FOUND(1016, "Seat not found"),
     SEAT_UNAVAILABLE_DUE_TO_DAMAGE(1017, "Cannot update seat to SOLD or EMPTY due to broken seat"),
     INVALID_SEAT_STATUS_TRANSITION(1018, "Cannot transfer sold seat to empty seat"),
-    INVALID_DATE_RANGE(1019, "Date is not in range"),
-    PROMOTION_NOT_FOUND(1020, "Promotion not found");{
+    INVALID_DATE_RANGE(1023, "Date is not in range"),
+    PROMOTION_NOT_FOUND(1024, "Promotion not found");{
     }
 
     private final int code;
