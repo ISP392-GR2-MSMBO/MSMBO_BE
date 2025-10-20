@@ -5,6 +5,7 @@ import com.example.ticket_booking_system.dto.reponse.seat.SeatResponse;
 import com.example.ticket_booking_system.dto.request.seat.SeatRequest;
 import com.example.ticket_booking_system.entity.Seat;
 import com.example.ticket_booking_system.mapper.SeatMapper;
+import com.example.ticket_booking_system.service.PriceService;
 import com.example.ticket_booking_system.service.SeatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,22 @@ public class SeatController {
 
 
     private final SeatService seatService;
+    private final PriceService priceService;
 
     @GetMapping("/theater/{theaterId}")
     public ResponseEntity<List<SeatResponse>> viewSeats(@PathVariable Long theaterId){
         List<Seat> seats = seatService.getSeatsByTheater(theaterId);
-        List<SeatResponse> responses = seats.stream().map(SeatMapper::toResponse).toList();
+
+        // SỬA LẠI ĐOẠN NÀY
+        List<SeatResponse> responses = seats.stream().map(seat -> {
+            // 1. Tính giá cuối cùng cho từng ghế
+            Float finalPrice = priceService.calculateFinalPrice(seat.getSeatType());
+
+            // 2. Gọi mapper với 2 tham số
+            return SeatMapper.toResponse(seat, finalPrice);
+
+        }).toList(); // KẾT THÚC SỬA
+
         return ResponseEntity.ok(responses);
     }
 
