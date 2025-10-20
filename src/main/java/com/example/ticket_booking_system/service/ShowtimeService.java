@@ -3,7 +3,6 @@ package com.example.ticket_booking_system.service;
 import com.example.ticket_booking_system.Enum.Approve;
 import com.example.ticket_booking_system.entity.Movie;
 import com.example.ticket_booking_system.entity.Showtime;
-import com.example.ticket_booking_system.entity.Theater;
 import com.example.ticket_booking_system.exception.AppException;
 import com.example.ticket_booking_system.exception.ErrorCode;
 import com.example.ticket_booking_system.repository.MovieRepository;
@@ -27,6 +26,14 @@ public class ShowtimeService {
         List<Showtime> list = showtimeRepository.findPublicShowtime(LocalDate.now());
         if (list.isEmpty()) throw new AppException(ErrorCode.SHOWTIME_NOT_FOUND);
         return list;
+    }
+    // ====== Public showtimes theo movieId (flow chuẩn, có kiểm tra APPROVE) ======
+    public List<Showtime> getPublicShowtimesByMovieId(Long movieId) {
+        if (movieId == null) throw new AppException(ErrorCode.MOVIE_NOT_FOUND);
+        List<Showtime> showtimes = showtimeRepository.findByMovie_MovieIDAndDateGreaterThanEqualOrderByDateAscStartTimeAsc(
+                movieId, LocalDate.now());
+        if (showtimes.isEmpty()) throw new AppException(ErrorCode.SHOWTIME_NOT_FOUND);
+        return showtimes;
     }
     // Movie phải CHƯA xóa & ĐÃ publish (đúng flow phê duyệt)
     private Movie requirePublishedActiveMovie(Movie movieRef) {
