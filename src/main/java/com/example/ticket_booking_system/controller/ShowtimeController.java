@@ -36,6 +36,12 @@ import java.util.List;
             return result;
         }
 
+        @GetMapping("/movie/{movieId}")
+        public ResponseEntity<List<ShowtimeResponse>> getPublicByMovie(@PathVariable Long movieId) {
+            return ResponseEntity.ok(showtimeService.getPublicShowtimesByMovieId(movieId)
+                    .stream().map(ShowtimeMapper::toResponse).toList());
+        }
+
         // Thêm showtime mới
         @PostMapping
         public ShowtimeResponse createShowtime(@Valid @RequestBody ShowtimeRequest request) {
