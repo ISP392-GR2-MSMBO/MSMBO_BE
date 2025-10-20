@@ -30,6 +30,7 @@ public class MovieRequest {
     private String description;
     private String poster;
     private String trailer;
+    private String banner;
     private String status;
 }
 

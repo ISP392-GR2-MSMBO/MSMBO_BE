@@ -1,5 +1,6 @@
 package com.example.ticket_booking_system.controller;
 
+import com.example.ticket_booking_system.dto.request.movie.BannerRequest;
 import com.example.ticket_booking_system.exception.AppException;
 import com.example.ticket_booking_system.exception.ErrorCode;
 import com.example.ticket_booking_system.mapper.MovieMapper;
@@ -65,6 +66,12 @@ public class MovieController {
                                                      @Valid @RequestBody MovieRequest request) {
         Movie movie = MovieMapper.toEntity(request);
         Movie updated = movieService.updateMovie(id, movie);
+        return ResponseEntity.ok(MovieMapper.toResponse(updated));
+    }
+    @PutMapping("/{id}/banner")
+    public ResponseEntity<MovieResponse> updateBanner(@PathVariable Long id,
+                                                      @Valid @RequestBody BannerRequest request) {
+        Movie updated = movieService.updateBanner(id, request.getBanner());
         return ResponseEntity.ok(MovieMapper.toResponse(updated));
     }
     // Xoá phim

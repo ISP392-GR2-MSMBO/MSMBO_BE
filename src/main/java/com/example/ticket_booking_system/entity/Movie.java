@@ -40,6 +40,8 @@ public class Movie {
     @Column
     private String trailer;
     @Column
+    private String banner;
+    @Column
     private String status;
     @Column(name = "is_deleted", nullable = false)
     @Builder.Default
@@ -49,7 +51,6 @@ public class Movie {
     @Column(name = "approve_status", length = 20, nullable = false)
     @Builder.Default
     private Approve approveStatus = Approve.PENDING;   // mặc định khi tạo mới
-
     @Column(name = "is_published", nullable = false)
     @Builder.Default
     private boolean isPublished = false;               // chỉ true sau khi admin duyệt
