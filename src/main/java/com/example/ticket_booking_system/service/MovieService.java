@@ -17,18 +17,13 @@ import java.util.List;
 public class MovieService {
     private final MovieRepository movieRepository;
 
-    /*public Optional<Movie> getMovieById(Long id){
-        return movieRepository.findById(id);
-    }*/
-//    public List<Movie> getAllMovies() {
-//        return movieRepository.findAll();
-//    }
+
     public List<Movie> getAllMovies() {
-        return movieRepository.findAll();
+        return movieRepository.findByIsDeletedFalse();
     }
 
     public Movie getMovie(Long movieId) {
-        return movieRepository.findByMovieIDAndIsDeletedFalseAndIsPublishedTrue(movieId)
+        return movieRepository.findById(movieId)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
     }
 
@@ -96,7 +91,6 @@ public class MovieService {
         }
         Movie existingMovie = movieRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
-
         // Sử dụng Builder pattern với toBuilder()
         Movie updatedMovie = existingMovie.toBuilder()
                 .movieName(movieDetails.getMovieName())
@@ -108,13 +102,14 @@ public class MovieService {
                 .releaseDate(movieDetails.getReleaseDate())
                 .language(movieDetails.getLanguage())
                 .description(movieDetails.getDescription())
+                .poster(movieDetails.getPoster())
+                .trailer(movieDetails.getTrailer())
                 .status(normalizeStatus(movieDetails.getStatus()))
                 .approveStatus(Approve.PENDING)
                 .isPublished(false)
                 .build();
         return movieRepository.save(updatedMovie);
     }
-
     // Xóa movie
     public void deleteMovie(Long id){
         Movie movie = movieRepository.findById(id)
@@ -125,7 +120,6 @@ public class MovieService {
         movie.setDeleted(true);
         movie.setPublished(false);// Đánh dấu là đã xóa
         movieRepository.save(movie); // Lưu lại
-
     }
     // ===== Admin actions =====
     public Movie approveMovie(Long id) {

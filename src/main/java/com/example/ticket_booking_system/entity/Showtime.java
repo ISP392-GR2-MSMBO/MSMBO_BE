@@ -1,5 +1,6 @@
 package com.example.ticket_booking_system.entity;
 
+import com.example.ticket_booking_system.Enum.Approve;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -31,4 +32,13 @@ public class Showtime {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     @Schema(example = "12:00")
     private LocalTime endTime;
+    // ====== Phê duyệt / xuất bản ======
+    @Enumerated(EnumType.STRING)
+    @Column(name = "approve_status", length = 20, nullable = false)
+    @Builder.Default
+    private Approve approveStatus = Approve.PENDING;   // mặc định khi tạo mới
+
+    @Column(name = "is_published", nullable = false)
+    @Builder.Default
+    private boolean isPublished = false;               // chỉ true sau khi admin duyệt
 }

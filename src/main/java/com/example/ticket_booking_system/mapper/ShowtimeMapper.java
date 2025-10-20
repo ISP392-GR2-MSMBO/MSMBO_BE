@@ -34,6 +34,7 @@ public class ShowtimeMapper {
         response.setDate(entity.getDate());
         response.setStartTime(entity.getStartTime());
         response.setEndTime(entity.getEndTime());
+        response.setApproveStatus(entity.getApproveStatus());
         return response;
     }
 }

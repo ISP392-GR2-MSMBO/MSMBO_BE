@@ -38,6 +38,7 @@ public class MovieMapper {
         res.setTrailer(movie.getTrailer());
         res.setStatus(movie.getStatus());
         res.setApproveStatus(movie.getApproveStatus());
+        res.setDeleted(movie.isDeleted());
         return res;
     }
 }

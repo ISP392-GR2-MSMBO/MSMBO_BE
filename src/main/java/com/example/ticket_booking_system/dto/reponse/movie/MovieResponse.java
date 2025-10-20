@@ -1,8 +1,6 @@
 package com.example.ticket_booking_system.dto.reponse.movie;
 
 import com.example.ticket_booking_system.Enum.Approve;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -26,6 +24,7 @@ public class MovieResponse {
     private String trailer;
     private String status;
     private Approve approveStatus;
+    private boolean isDeleted;
 }
 
 

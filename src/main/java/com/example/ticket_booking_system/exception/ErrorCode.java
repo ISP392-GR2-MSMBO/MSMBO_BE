@@ -8,7 +8,7 @@ public enum ErrorCode {
     MOVIE_NOT_FOUND(1001, "Movie is not found!"),
     USER_EXISTED(1002, "User existed"),
     USERNAME_EXISTED(1003, "Username existed"),
-    INVALID_PASSWORD(1004, "Password must be at least 8 characters"),
+    INVALID_PASSWORD(1004, "Wrong password"),
     SHOWTIME_NOT_FOUND(1005, "Showtime not found"),
     MISSING_MOVIE_ID(1006, "Missing movie ID to update"),
     INVALID_STATUS(1007, "Invalid movie status (Now showing||Coming soon||Ended)"),
@@ -23,8 +23,11 @@ public enum ErrorCode {
     SEAT_NOT_FOUND(1016, "Seat not found"),
     SEAT_UNAVAILABLE_DUE_TO_DAMAGE(1017, "Cannot update seat to SOLD or EMPTY due to broken seat"),
     INVALID_SEAT_STATUS_TRANSITION(1018, "Cannot transfer sold seat to empty seat"),
-    INVALID_DATE_RANGE(1023, "Date is not in range"),
-    PROMOTION_NOT_FOUND(1024, "Promotion not found");{
+    CANNOT_EDIT_PUBLISHED(1019, "Published showtime cannot be edited"),
+    SHOWTIME_ALREADY_PUBLISHED(1020, "Showtime already published"),
+    PAST_SHOWTIME_CANNOT_PUBLISH(1021, "Past showtime can not publish"),
+    MOVIE_NOT_APPROVED(1022, "Movie is not approved");
+    {
     }
 
     private final int code;
