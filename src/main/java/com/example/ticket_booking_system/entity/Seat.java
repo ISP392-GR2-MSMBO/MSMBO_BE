@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -27,15 +26,18 @@ public class Seat {
     @Column
     private Integer number;
 
-    @Column
-    private String type;    //Couple, Vip...
+//    @Column
+//    private String type;    //Couple, Vip...
+//    @Column
+//    private Float price;
 
-    @Column
-    private Float price;
+    @ManyToOne
+    @JoinColumn(name = "seatTypeID", nullable = false)
+    private SeatType seatType;
 
     @Column
     @Enumerated(EnumType.STRING)
     private SeatStatus status;  //Empty, Sold, Unavailable...
 
-    private boolean isBroken = false;
+//    private boolean isBroken = false;
 }

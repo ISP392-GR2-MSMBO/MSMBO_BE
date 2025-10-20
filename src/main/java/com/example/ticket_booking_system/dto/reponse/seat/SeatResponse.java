@@ -14,5 +14,10 @@ public class SeatResponse {
     private Integer number;
     private String type;
     private Float price;
+
+    private Float basePrice;
+    private Float finalePrice;
+    private String promotionName;
+
     private String status;
 }

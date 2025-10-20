@@ -15,13 +15,15 @@ import java.util.List;
 
 public class SeatService {
     private final SeatRepository seatRepository;
-    public List<Seat> getSeatsByTheater(Long theaterNumber) {
-        List<Seat> seats = seatRepository.findByTheaterId(theaterNumber);
-        for (Seat s: seats){
-            if(s.isBroken()){
-                s.setStatus(SeatStatus.UNAVAILABLE);
-            }
-        }
+    private final PriceService priceService;
+
+    public List<Seat> getSeatsByTheater(Long theaterId) {
+        List<Seat> seats = seatRepository.findByTheaterId(theaterId);
+//        for (Seat s: seats){
+//            if(s.isBroken()){
+//                s.setStatus(SeatStatus.UNAVAILABLE);
+//            }
+//        }
         return seats;
     }
 
@@ -31,7 +33,11 @@ public class SeatService {
                 .orElseThrow(() -> new AppException(ErrorCode.SEAT_NOT_FOUND));
 
         // Nếu ghế bị hỏng thì không cho cập nhật trạng thái thành EMPTY hoặc SOLD
-        if (seat.isBroken() && (newStatus == SeatStatus.EMPTY || newStatus == SeatStatus.SOLD)) {
+//        if (seat.isBroken() && (newStatus == SeatStatus.EMPTY || newStatus == SeatStatus.SOLD)) {
+//            throw new AppException(ErrorCode.SEAT_UNAVAILABLE_DUE_TO_DAMAGE);
+//        }
+
+        if (seat.getStatus() == SeatStatus.UNAVAILABLE && (newStatus == SeatStatus.EMPTY || newStatus == SeatStatus.SOLD)) {
             throw new AppException(ErrorCode.SEAT_UNAVAILABLE_DUE_TO_DAMAGE);
         }
 

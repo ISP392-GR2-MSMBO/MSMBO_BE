@@ -26,7 +26,9 @@ public enum ErrorCode {
     CANNOT_EDIT_PUBLISHED(1019, "Published showtime cannot be edited"),
     SHOWTIME_ALREADY_PUBLISHED(1020, "Showtime already published"),
     PAST_SHOWTIME_CANNOT_PUBLISH(1021, "Past showtime can not publish"),
-    MOVIE_NOT_APPROVED(1022, "Movie is not approved");
+    MOVIE_NOT_APPROVED(1022, "Movie is not approved"),
+    INVALID_DATE_RANGE(1023, "Date is not in range"),
+    PROMOTION_NOT_FOUND(1024, "Promotion not found");
     {
     }
 
