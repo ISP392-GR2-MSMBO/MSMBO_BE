@@ -19,7 +19,6 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    // nếu bạn có bean BCryptPasswordEncoder trong config, inject nó thay vì new
     private final BCryptPasswordEncoder passwordEncoder;
 
     // 🟢 Register — chỉ cho CUSTOMER
