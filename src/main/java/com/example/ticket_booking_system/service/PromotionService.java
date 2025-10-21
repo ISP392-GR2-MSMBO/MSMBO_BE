@@ -22,6 +22,10 @@ public class PromotionService {
 
     @Transactional
     public Promotion createPromotion(CreatePromotionRequest request){
+        if(promotionRepository.existsByName(request.getName())){
+            throw new AppException(ErrorCode.PROMOTION_NAME_EXISTS);
+        }
+
         if(request.getEndDate().isBefore(request.getStartDate())) {
             throw new AppException(ErrorCode.INVALID_DATE_RANGE);
         }

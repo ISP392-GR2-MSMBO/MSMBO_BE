@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 public class UpdatePromotionStatusRequest {
 
-    @NotNull(message = "Trạng thái isActive không được để trống")
+    @NotNull(message = "Status isActive must not empty")
     private Boolean isActive; // Dùng Boolean (object) thay vì boolean (primitive)
 }

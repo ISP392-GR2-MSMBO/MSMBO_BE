@@ -1,6 +1,7 @@
 package com.example.ticket_booking_system.controller;
 
 
+import com.example.ticket_booking_system.dto.request.promotion.ApplyPromotionRequest;
 import com.example.ticket_booking_system.dto.request.promotion.CreatePromotionRequest;
 import com.example.ticket_booking_system.dto.request.promotion.UpdatePromotionStatusRequest;
 import com.example.ticket_booking_system.entity.Promotion;
@@ -33,9 +34,8 @@ public class PromotionController {
     @PostMapping("/{id}/apply-to-seat-types")
     public ResponseEntity<Void> applyPromotionToSeatTypes(
             @PathVariable("id") Long promotionId,
-            @RequestBody List<Long> seatTypeIds
-    ) {
-        promotionService.applyPromotionToSeatTypes(promotionId, seatTypeIds);
+            @Valid @RequestBody ApplyPromotionRequest request    ) {
+        promotionService.applyPromotionToSeatTypes(promotionId, request.getSeatTypeID());
         return ResponseEntity.ok().build(); // Trả về 200 OK
     }
 
