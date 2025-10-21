@@ -24,14 +24,10 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
                           @Param("startTime") LocalTime startTime,
                           @Param("endTime") LocalTime endTime);
     @Query("""
-      SELECT s FROM Showtime s
-      WHERE s.isPublished = true
-        AND s.approveStatus = Approve.APPROVE
-        AND s.movie.isDeleted = false
-        AND s.date >= :today
-      ORDER BY s.date, s.startTime
-    """)
-    List<Showtime> findPublicShowtime(LocalDate today);
+    SELECT s FROM Showtime s
+    ORDER BY s.date ASC, s.startTime ASC
+""")
+    List<Showtime> findAllShowtime();
 //    List<Showtime> findByMovie_MovieIDAndDateGreaterThanEqualOrderByDateAscStartTimeAsc(
 //            Long movieId, LocalDate today
 //    );
