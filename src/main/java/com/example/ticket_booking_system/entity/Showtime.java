@@ -32,6 +32,9 @@ public class Showtime {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     @Schema(example = "12:00")
     private LocalTime endTime;
+    @Column(name = "is_deleted", nullable = false)
+    @Builder.Default
+    private boolean isDeleted = false; // default là chưa xóa
     // ====== Phê duyệt / xuất bản ======
     @Enumerated(EnumType.STRING)
     @Column(name = "approve_status", length = 20, nullable = false)

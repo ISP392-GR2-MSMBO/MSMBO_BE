@@ -21,19 +21,19 @@ public class ShowtimeService {
     private final ShowtimeRepository showtimeRepository;
     private final TheaterRepository theaterRepository;
     private final MovieRepository movieRepository;
-    // ====== Danh sách public cho web (chỉ đã duyệt & publish)
-    public List<Showtime> getPublicShowtimes() {
-        List<Showtime> list = showtimeRepository.findPublicShowtime(LocalDate.now());
+    //Danh sách public cho web (chỉ đã duyệt & publish)
+    public List<Showtime> getAllShowtimes() {
+        List<Showtime> list = showtimeRepository.findAllShowtime();
         if (list.isEmpty()) throw new AppException(ErrorCode.SHOWTIME_NOT_FOUND);
         return list;
     }
-    // ====== Public showtimes theo movieId (flow chuẩn, có kiểm tra APPROVE) ======
+    //Public showtime theo movieId (flow chuẩn, có kiểm tra APPROVE)
     public List<Showtime> getPublicShowtimesByMovieId(Long movieId) {
         if (movieId == null) throw new AppException(ErrorCode.MOVIE_NOT_FOUND);
-        List<Showtime> showtimes = showtimeRepository.findByMovie_MovieIDAndDateGreaterThanEqualOrderByDateAscStartTimeAsc(
+        List<Showtime> showtime = showtimeRepository.findByMovie_MovieIDAndIsDeletedFalseAndDateGreaterThanEqualOrderByDateAscStartTimeAsc(
                 movieId, LocalDate.now());
-        if (showtimes.isEmpty()) throw new AppException(ErrorCode.SHOWTIME_NOT_FOUND);
-        return showtimes;
+        if (showtime.isEmpty()) throw new AppException(ErrorCode.SHOWTIME_NOT_FOUND);
+        return showtime;
     }
     // Movie phải CHƯA xóa & ĐÃ publish (đúng flow phê duyệt)
     private Movie requirePublishedActiveMovie(Movie movieRef) {
@@ -91,7 +91,6 @@ public class ShowtimeService {
         showtime.setPublished(false);
         return showtimeRepository.save(showtime);
     }
-
     //  Update new showtime
     public Showtime updateShowtime(Long id, Showtime updatedShowtime) {
         Long theaterId = updatedShowtime.getTheater().getTheaterID();
@@ -129,7 +128,7 @@ public class ShowtimeService {
         }
         return showtimeRepository.save(existing);
     }
-    // ===== Admin approve / deny =====
+    //Admin approve / deny
     public Showtime adminApproveOrDeny(Long id, boolean approve) {
         Showtime s = showtimeRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.SHOWTIME_NOT_FOUND));
@@ -149,10 +148,21 @@ public class ShowtimeService {
         return showtimeRepository.save(s);
     }
     //  Delete showtime
-    public void deleteShowtime(Long id) {
-        if (!showtimeRepository.existsById(id)) {
-            throw new AppException(ErrorCode.SHOWTIME_NOT_FOUND);
+//    public void deleteShowtime(Long id) {
+//        if (!showtimeRepository.existsById(id)) {
+//            throw new AppException(ErrorCode.SHOWTIME_NOT_FOUND);
+//        }
+//        showtimeRepository.deleteById(id);
+//    }
+    // Xóa movie
+    public void deleteShowtime(Long id){
+        Showtime showtime = showtimeRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.SHOWTIME_NOT_FOUND));
+        if (showtime.isDeleted()) {
+            throw new AppException(ErrorCode.SHOWTIME_ALREADY_DELETED); // Tạo thêm error code nếu muốn
         }
-        showtimeRepository.deleteById(id);
+        showtime.setDeleted(true);
+        showtime.setPublished(false);// Đánh dấu là đã xóa
+        showtimeRepository.save(showtime); // Lưu lại
     }
 }
