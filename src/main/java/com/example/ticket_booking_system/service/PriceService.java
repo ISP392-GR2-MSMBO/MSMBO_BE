@@ -27,6 +27,7 @@ public class PriceService {
 
         //Ap dung KM
         Float bestPrice = basePrice;
+        String promotionName = null;
         for (Promotion p : promotionList){
             Float discountPrice = basePrice;
             if("percentage".equals(p.getDiscountType())){
@@ -37,6 +38,7 @@ public class PriceService {
 
             if(discountPrice < bestPrice){
                 bestPrice = discountPrice;
+
             }
         }
         return (bestPrice < 0) ? 0: bestPrice; // tranh gia am

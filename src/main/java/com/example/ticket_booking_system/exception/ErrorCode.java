@@ -21,14 +21,15 @@ public enum ErrorCode {
     MOVIE_ALREADY_DELETED(1014, "Movie has already been deleted"),
     MOVIE_DELETED_OR_INACTIVE(1015, "Movie is deleted or inactive"),
     SEAT_NOT_FOUND(1016, "Seat not found"),
-    SEAT_UNAVAILABLE_DUE_TO_DAMAGE(1017, "Cannot update seat to SOLD or EMPTY due to broken seat"),
+    SEAT_UNAVAILABLE_DUE_TO_DAMAGE(1017, "Cannot update seat to SOLD due to broken seat"),
     INVALID_SEAT_STATUS_TRANSITION(1018, "Cannot transfer sold seat to empty seat"),
     CANNOT_EDIT_PUBLISHED(1019, "Published showtime cannot be edited"),
     SHOWTIME_ALREADY_PUBLISHED(1020, "Showtime already published"),
     PAST_SHOWTIME_CANNOT_PUBLISH(1021, "Past showtime can not publish"),
     MOVIE_NOT_APPROVED(1022, "Movie is not approved"),
     INVALID_DATE_RANGE(1023, "Date is not in range"),
-    PROMOTION_NOT_FOUND(1024, "Promotion not found");
+    PROMOTION_NOT_FOUND(1026, "Promotion not found"),
+    PROMOTION_NAME_EXISTS(1027, "Promotion name has exists");
     {
     }
 

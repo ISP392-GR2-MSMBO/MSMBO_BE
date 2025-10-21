@@ -37,7 +37,7 @@ public class SeatService {
 //            throw new AppException(ErrorCode.SEAT_UNAVAILABLE_DUE_TO_DAMAGE);
 //        }
 
-        if (seat.getStatus() == SeatStatus.UNAVAILABLE && (newStatus == SeatStatus.EMPTY || newStatus == SeatStatus.SOLD)) {
+        if (seat.getStatus() == SeatStatus.UNAVAILABLE && newStatus == SeatStatus.SOLD) {
             throw new AppException(ErrorCode.SEAT_UNAVAILABLE_DUE_TO_DAMAGE);
         }
 
