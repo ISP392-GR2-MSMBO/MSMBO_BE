@@ -132,7 +132,7 @@ public class MovieService {
         Movie m = movieRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
         if (m.isDeleted()) throw new AppException(ErrorCode.MOVIE_DELETED_OR_INACTIVE);
-        m.setApproveStatus(com.example.ticket_booking_system.Enum.Approve.APPROVE);
+        m.setApproveStatus(Approve.APPROVE);
         m.setPublished(true);
         return movieRepository.save(m);
     }
@@ -141,7 +141,7 @@ public class MovieService {
         Movie m = movieRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
         if (m.isDeleted()) throw new AppException(ErrorCode.MOVIE_DELETED_OR_INACTIVE);
-        m.setApproveStatus(com.example.ticket_booking_system.Enum.Approve.DENIED);
+        m.setApproveStatus(Approve.DENIED);
         m.setPublished(false);
         return movieRepository.save(m);
     }

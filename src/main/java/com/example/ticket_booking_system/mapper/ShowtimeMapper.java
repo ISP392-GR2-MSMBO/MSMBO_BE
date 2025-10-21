@@ -35,6 +35,7 @@ public class ShowtimeMapper {
         response.setStartTime(entity.getStartTime());
         response.setEndTime(entity.getEndTime());
         response.setApproveStatus(entity.getApproveStatus());
+        response.setDeleted(entity.isDeleted());
         return response;
     }
 }

@@ -25,4 +25,5 @@ public class ShowtimeResponse {
     @Schema(example = "12:00")
     private LocalTime endTime;
     private Approve approveStatus;
+    private boolean isDeleted;
 }

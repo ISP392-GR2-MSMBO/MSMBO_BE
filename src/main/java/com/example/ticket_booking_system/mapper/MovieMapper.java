@@ -18,7 +18,6 @@ public class MovieMapper {
         movie.setDescription(request.getDescription());
         movie.setPoster(request.getPoster());
         movie.setTrailer(request.getTrailer());
-        movie.setBanner(request.getBanner());
         movie.setStatus(request.getStatus());
         return movie;
     }

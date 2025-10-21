@@ -32,8 +32,10 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
       ORDER BY s.date, s.startTime
     """)
     List<Showtime> findPublicShowtime(LocalDate today);
-    List<Showtime> findByMovie_MovieIDAndDateGreaterThanEqualOrderByDateAscStartTimeAsc(
-            Long movieId, LocalDate today
+//    List<Showtime> findByMovie_MovieIDAndDateGreaterThanEqualOrderByDateAscStartTimeAsc(
+//            Long movieId, LocalDate today
+//    );
+    List<Showtime> findByMovie_MovieIDAndIsDeletedFalseAndDateGreaterThanEqualOrderByDateAscStartTimeAsc(
+            Long movieId, LocalDate date
     );
-
 }
