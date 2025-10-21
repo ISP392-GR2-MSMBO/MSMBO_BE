@@ -28,12 +28,12 @@ import java.util.List;
 
         // Lấy tất cả showtime
         @GetMapping
-        public List<ShowtimeResponse> getAllShowtimes() {
-            List<ShowtimeResponse> result = new ArrayList<>();
-            for (Showtime s : showtimeService.getPublicShowtimes()) {
-                result.add(ShowtimeMapper.toResponse(s));
-            }
-            return result;
+        public ResponseEntity<List<ShowtimeResponse>> getAllShowtimes() {
+            List<Showtime> list = showtimeService.getAllShowtimes();
+            List<ShowtimeResponse> res = list.stream()
+                    .map(ShowtimeMapper::toResponse)
+                    .toList();
+            return ResponseEntity.ok(res);
         }
 
         @GetMapping("/movie/{movieId}")

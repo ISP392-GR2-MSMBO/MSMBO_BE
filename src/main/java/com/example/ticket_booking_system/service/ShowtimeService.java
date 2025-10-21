@@ -22,8 +22,8 @@ public class ShowtimeService {
     private final TheaterRepository theaterRepository;
     private final MovieRepository movieRepository;
     //Danh sách public cho web (chỉ đã duyệt & publish)
-    public List<Showtime> getPublicShowtimes() {
-        List<Showtime> list = showtimeRepository.findPublicShowtime(LocalDate.now());
+    public List<Showtime> getAllShowtimes() {
+        List<Showtime> list = showtimeRepository.findAllShowtime();
         if (list.isEmpty()) throw new AppException(ErrorCode.SHOWTIME_NOT_FOUND);
         return list;
     }
