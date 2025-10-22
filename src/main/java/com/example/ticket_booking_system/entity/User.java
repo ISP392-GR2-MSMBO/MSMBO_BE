@@ -37,5 +37,8 @@ public class User {
 
     @Column(nullable = false)
     private boolean status = true; // true = active, false = inactive
-//    private boolean isDelete;
+
+    @Builder.Default
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDelete=false;
 }
