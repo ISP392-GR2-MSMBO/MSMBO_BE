@@ -34,6 +34,6 @@ public class SeatRequest {
     private Float price;
 
     @NotNull(message = "Seat must have a status")
-    @Schema(description = "Trạng thái ghế (EMPTY, SOLD, BROKEN...)")
+    @Schema(description = "Trạng thái ghế (EMPTY, SOLD, UNAVAILABLE...)")
     private SeatStatus status;
 }

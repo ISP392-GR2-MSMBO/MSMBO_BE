@@ -26,10 +26,7 @@ public class Seat {
     @Column
     private Integer number;
 
-//    @Column
-//    private String type;    //Couple, Vip...
-//    @Column
-//    private Float price;
+
 
     @ManyToOne
     @JoinColumn(name = "seatTypeID", nullable = false)

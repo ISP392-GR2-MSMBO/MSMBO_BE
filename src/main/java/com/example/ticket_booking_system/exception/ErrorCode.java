@@ -28,7 +28,9 @@ public enum ErrorCode {
     PAST_SHOWTIME_CANNOT_PUBLISH(1021, "Past showtime can not publish"),
     MOVIE_NOT_APPROVED(1022, "Movie is not approved"),
     INVALID_DATE_RANGE(1023, "Date is not in range"),
-    PROMOTION_NOT_FOUND(1024, "Promotion not found");
+    PROMOTION_NOT_FOUND(1024, "Promotion not found"),
+    SHOWTIME_ALREADY_DELETED(1025, "Showtime has already been deleted"),
+    PROMOTION_NAME_EXISTS(1027, "Promotion name has exists");
     {
     }
 

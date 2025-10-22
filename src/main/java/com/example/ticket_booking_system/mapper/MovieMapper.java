@@ -36,6 +36,7 @@ public class MovieMapper {
         res.setDescription(movie.getDescription());
         res.setPoster(movie.getPoster());
         res.setTrailer(movie.getTrailer());
+        res.setBanner(movie.getBanner());
         res.setStatus(movie.getStatus());
         res.setApproveStatus(movie.getApproveStatus());
         res.setDeleted(movie.isDeleted());

@@ -12,20 +12,20 @@ import java.time.LocalDate;
 @Setter
 public class CreatePromotionRequest {
 
-    @NotBlank(message = "Tên khuyến mãi không được để trống")
+    @NotBlank(message = "Promotion name must not empty")
     private String name;
 
-    @NotNull(message = "Ngày bắt đầu không được để trống")
-    @FutureOrPresent(message = "Ngày bắt đầu phải là hôm nay hoặc trong tương lai")
+    @NotNull(message = "Start Date must not empty")
+    @FutureOrPresent(message = "Start Date must start from today or in the future")
     private LocalDate startDate;
 
-    @NotNull(message = "Ngày kết thúc không được để trống")
-    @FutureOrPresent(message = "Ngày kết thúc phải là hôm nay hoặc trong tương lai")
+    @NotNull(message = "End Date must not empty")
+    @FutureOrPresent(message = "End Date must start from today or in the future")
     private LocalDate endDate;
 
-    @NotBlank(message = "Loại giảm giá không được để trống")
+    @NotBlank(message = "Discount Type must not empty")
     private String discountType; // "percentage" hoặc "fixed_amount"
 
-    @NotNull(message = "Giá trị giảm giá không được để trống")
+    @NotNull(message = "Discount Value must not empty")
     private Float discountValue;
 }

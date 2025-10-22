@@ -27,4 +27,6 @@ public interface PromotionRepository extends JpaRepository<Promotion, Long> {
             @Param("seatTypeId") Long seatTypeId,
             @Param("dateToCheck") LocalDate dateToCheck
     );
+
+    boolean existsByName(String name);
 }
