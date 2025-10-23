@@ -21,7 +21,9 @@ public class Promotion {
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String discountType;  //Giam theo %(10%), giam theo so tien(20k)
+    private String discountType;//Giam theo %(10%)"percentage", giam theo so tien(20k)"fixed-amount"
+
+    @Column
     private Float discountValue;
     private boolean isActive;
 
