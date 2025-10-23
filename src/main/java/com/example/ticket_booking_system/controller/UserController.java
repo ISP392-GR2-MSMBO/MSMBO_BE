@@ -50,7 +50,6 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(id, request));
     }
 
-
     // Xóa user theo ID
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
@@ -64,6 +63,26 @@ public class UserController {
             @PathVariable Long id,
             @RequestParam Role newRole) {
         return ResponseEntity.ok(userService.updateUserRole(id, newRole));
+    }
+    
+    // Xác thực email khi người dùng bấm link trong mail
+    @GetMapping("/verify-email")
+    public ResponseEntity<String> verifyEmail(@RequestParam String token) {
+        userService.verifyEmail(token);
+        return ResponseEntity.ok("Email verified successfully!");
+    }
+
+    //  Gửi lại email xác thực (resend)
+    @PostMapping("/{id}/resend-verify")
+    public ResponseEntity<String> resendVerification(@PathVariable Long id) {
+        userService.resendEmailVerify(id);
+        return ResponseEntity.ok("Verification email has been resent!");
+    }
+
+    // (OPTIONAL) Kiểm tra trạng thái xác thực email
+    @GetMapping("/{id}/email-status")
+    public ResponseEntity<Boolean> getEmailStatus(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.isEmailVerified(id));
     }
 }
 

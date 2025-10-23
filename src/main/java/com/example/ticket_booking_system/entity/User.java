@@ -41,4 +41,10 @@ public class User {
     @Builder.Default
     @Column(name = "is_deleted", nullable = false)
     private boolean isDelete=false;
+    // ✅ Thêm trường xác thực email
+    @Column(nullable = false)
+    private boolean emailVerified = false;
+    @Column(length = 64)
+    private String emailVerifyToken;      // token ngắn
+    private java.time.LocalDateTime emailVerifyTokenExp; // hạn token (vd: +24h)
 }

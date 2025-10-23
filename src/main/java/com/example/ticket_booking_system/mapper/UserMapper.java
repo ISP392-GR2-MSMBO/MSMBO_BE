@@ -18,6 +18,10 @@ public class UserMapper {
         user.setPhone(request.getPhone());
         user.setRoleID(request.getRoleID());
         user.setStatus(request.isStatus());
+        // 🆕 mặc định email chưa xác thực khi tạo mới
+        user.setEmailVerified(false);
+        user.setEmailVerifyToken(null);
+        user.setEmailVerifyTokenExp(null);
         return user;
     }
 
@@ -33,6 +37,7 @@ public class UserMapper {
         response.setPhone(user.getPhone());
         response.setRoleID(user.getRoleID());
         response.setStatus(user.isStatus());
+        response.setEmailVerified(user.isEmailVerified());
         return response;
     }
 }

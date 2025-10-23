@@ -10,17 +10,20 @@ import com.example.ticket_booking_system.exception.ErrorCode;
 import com.example.ticket_booking_system.mapper.UserMapper;
 import com.example.ticket_booking_system.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
     private final UserRepository userRepository;
-
+    private final EmailService emailService;
+    @Value("${app.base-url}")
+    private String baseUrl; // Spring sẽ inject giá trị từ application.properties
     // Lấy danh sách tất cả user
     public List<UserResponse> getAllUsers() {
         return userRepository.findByIsDeleteFalse()
@@ -41,8 +44,56 @@ public class UserService {
             throw new AppException(ErrorCode.PHONE_EXISTED);
         }
         User user = UserMapper.toEntity(request);
+        user.setEmailVerified(false);
+        // tạo token + hạn 24h
+        String token = generateToken();
+        user.setEmailVerifyToken(token);
+        user.setEmailVerifyTokenExp(java.time.LocalDateTime.now().plusHours(24));
         userRepository.save(user);
+        // gửi mail kèm link xác thực
+        String link = baseUrl + "/api/users/verify-email?token=" + token;
+        emailService.sendEmailVerification(user.getEmail(), link);
         return UserMapper.toResponse(user);
+    }
+    public void verifyEmail(String token) {
+        User user = userRepository.findByEmailVerifyToken(token)
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_TOKEN));
+
+        if (user.getEmailVerifyTokenExp() == null ||
+                java.time.LocalDateTime.now().isAfter(user.getEmailVerifyTokenExp())) {
+            throw new AppException(ErrorCode.TOKEN_EXPIRED);
+        }
+
+        user.setEmailVerified(true);
+        user.setEmailVerifyToken(null);
+        user.setEmailVerifyTokenExp(null);
+        userRepository.save(user);
+    }
+
+    private String generateToken() {
+        // token 32 ký tự, bạn có thể dùng UUID hoặc SecureRandom
+        return java.util.UUID.randomUUID().toString().replace("-", "");
+    }
+
+    public void resendEmailVerify(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        if (user.isEmailVerified()) return; // đã xác thực thì bỏ qua
+
+        String newToken = generateToken();
+        user.setEmailVerifyToken(newToken);
+        user.setEmailVerifyTokenExp(LocalDateTime.now().plusHours(24));
+        userRepository.save(user);
+
+        String link = baseUrl + "/api/users/verify-email?token=" + newToken;
+        emailService.sendEmailVerification(user.getEmail(), link);
+    }
+
+    public boolean isEmailVerified(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        return user.isEmailVerified();
     }
 
     // Tìm người dùng theo username
