@@ -1,5 +1,6 @@
 package com.example.ticket_booking_system.controller;
 
+import com.example.ticket_booking_system.Enum.Role;
 import com.example.ticket_booking_system.dto.request.user.UserRequest;
 import com.example.ticket_booking_system.dto.reponse.user.UserResponse;
 import com.example.ticket_booking_system.dto.request.user.UserUpdateProfileRequest;
@@ -56,6 +57,14 @@ public class UserController {
         return ResponseEntity.ok("User deleted successfully");
     }
 
+    // doi role nguoi dung
+    @PutMapping("/{id}/role")
+    public ResponseEntity<UserResponse> updateUserRole(
+            @PathVariable Long id,
+            @RequestParam Role newRole) {
+        return ResponseEntity.ok(userService.updateUserRole(id, newRole));
+    }
+    
     // Xác thực email khi người dùng bấm link trong mail
     @GetMapping("/verify-email")
     public ResponseEntity<String> verifyEmail(@RequestParam String token) {
