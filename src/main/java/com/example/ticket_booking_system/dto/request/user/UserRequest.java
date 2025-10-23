@@ -24,7 +24,7 @@ public class UserRequest {
     @NotBlank(message = "Email cannot be blank")
     private String email;
 
-    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be exactly 10 digits")
+    @Pattern(regexp = "^0[0-9]{9}$", message = "Phone number must be exactly 10 digits")
     @NotBlank(message = "Phone cannot be blank")
     private String phone;
     private Role roleID;  // AD, MA, ST, CUS

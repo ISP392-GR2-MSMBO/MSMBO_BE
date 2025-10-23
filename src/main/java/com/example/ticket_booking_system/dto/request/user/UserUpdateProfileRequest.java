@@ -18,7 +18,7 @@ public class UserUpdateProfileRequest {
     //@NotBlank(message = "Email cannot be blank")
     private String email;
 
-    @Pattern(regexp = "^0[0-9]{9}$", message = "Phone number must be exactly 10 digits")
+    @Pattern(regexp = "^0[0-9]{9}$", message = "Phone number must start at 0 and have 10 digit")
     //@NotBlank(message = "Phone cannot be blank")
     private String phone;
 }

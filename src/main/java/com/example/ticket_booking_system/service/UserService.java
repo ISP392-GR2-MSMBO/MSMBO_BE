@@ -1,5 +1,6 @@
 package com.example.ticket_booking_system.service;
 
+import com.example.ticket_booking_system.Enum.Role;
 import com.example.ticket_booking_system.dto.request.user.UserRequest;
 import com.example.ticket_booking_system.dto.reponse.user.UserResponse;
 import com.example.ticket_booking_system.dto.request.user.UserUpdateProfileRequest;
@@ -25,7 +26,7 @@ public class UserService {
     private String baseUrl; // Spring sẽ inject giá trị từ application.properties
     // Lấy danh sách tất cả user
     public List<UserResponse> getAllUsers() {
-        return userRepository.findAll()
+        return userRepository.findByIsDeleteFalse()
                 .stream()
                 .map(UserMapper::toResponse)
                 .collect(Collectors.toList());
@@ -153,11 +154,21 @@ public class UserService {
         return UserMapper.toResponse(existingUser);
     }
 
-    // Xóa user
+    // Xóa mem user
     public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)){
-            throw new AppException(ErrorCode.USER_NOT_FOUND);
-        }
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        user.setDelete(true); // đánh dấu đã xóa
+        userRepository.save(user);
+    }
+
+    // cap nhat role nguoi dung
+    public UserResponse updateUserRole(Long id, Role newRole) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        user.setRoleID(newRole);
+        userRepository.save(user);
+
+        return UserMapper.toResponse(user);
     }
 }
