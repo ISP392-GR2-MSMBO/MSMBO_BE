@@ -48,7 +48,7 @@ public class UserService {
         // tạo token + hạn 24h
         String token = generateToken();
         user.setEmailVerifyToken(token);
-        user.setEmailVerifyTokenExp(java.time.LocalDateTime.now().plusHours(24));
+        user.setEmailVerifyTokenExp(java.time.LocalDateTime.now().plusMinutes(20));
         userRepository.save(user);
         // gửi mail kèm link xác thực
         String link = baseUrl + "/api/users/verify-email?token=" + token;
