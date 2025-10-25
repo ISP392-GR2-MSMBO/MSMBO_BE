@@ -1,12 +1,17 @@
 package com.example.ticket_booking_system.service;
 
 import com.example.ticket_booking_system.Enum.SeatStatus;
+import com.example.ticket_booking_system.dto.request.seat.CreateSingleSeatRequest;
 import com.example.ticket_booking_system.entity.Seat;
+import com.example.ticket_booking_system.entity.SeatType;
 import com.example.ticket_booking_system.exception.AppException;
 import com.example.ticket_booking_system.exception.ErrorCode;
 import com.example.ticket_booking_system.repository.SeatRepository;
+import com.example.ticket_booking_system.repository.SeatTypeRepository;
+import com.example.ticket_booking_system.repository.TheaterRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +21,8 @@ import java.util.List;
 public class SeatService {
     private final SeatRepository seatRepository;
     private final PriceService priceService;
+    private final TheaterRepository theaterRepository;
+    private final SeatTypeRepository seatTypeRepository;
 
     public List<Seat> getSeatsByTheater(Long theaterId) {
         List<Seat> seats = seatRepository.findByTheaterId(theaterId);
@@ -60,6 +67,32 @@ public class SeatService {
 
     public List<Seat> getAllSeat(){
         return seatRepository.findAll();
+    }
+
+    @Transactional
+    public void addSeats(Long theaterId, List<CreateSingleSeatRequest> seatRequest){
+
+        if (!theaterRepository.existsById(theaterId)) {
+            throw new AppException(ErrorCode.THEATER_NOT_FOUND);
+        }
+
+        for(CreateSingleSeatRequest seatReq : seatRequest){
+            SeatType seatType = seatTypeRepository.findById(seatReq.getSeatTypeId()).
+            orElseThrow(() -> new AppException(ErrorCode.SEAT_TYPE_NOT_FOUND));
+
+            if(seatRepository.existsByTheaterIdAndRowAndNumber(theaterId, seatReq.getRowName(), seatReq.getNumber())){
+                throw new AppException(ErrorCode.SEAT_ALREADY_EXISTS);
+            }
+
+            Seat newSeat = new Seat();
+            newSeat.setTheaterId(theaterId);
+            newSeat.setRow(seatReq.getRowName());
+            newSeat.setNumber(seatReq.getNumber());
+            newSeat.setSeatType(seatType);
+            newSeat.setStatus(SeatStatus.EMPTY);
+
+            seatRepository.save(newSeat);
+        }
     }
 
 }

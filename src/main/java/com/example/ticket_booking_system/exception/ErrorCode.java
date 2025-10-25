@@ -30,7 +30,13 @@ public enum ErrorCode {
     INVALID_DATE_RANGE(1023, "Date is not in range"),
     PROMOTION_NOT_FOUND(1024, "Promotion not found"),
     SHOWTIME_ALREADY_DELETED(1025, "Showtime has already been deleted"),
-    PROMOTION_NAME_EXISTS(1027, "Promotion name has exists");
+    PROMOTION_NAME_EXISTS(1026, "Promotion name has exists"),
+    INVALID_TOKEN(1027,"Token invalid!"),
+    TOKEN_EXPIRED(1028, "Token expired!"),
+    SEAT_TYPE_NOT_FOUND(1029, "Seat type not found"),
+    SEAT_ALREADY_EXISTS(1030, "Seat already exists, Can not add"),
+    SEAT_ALREADY_BOOKED(1031, "seat already booked!"),
+    COMBO_NOT_FOUND(1032, "Combo not found!");
     {
     }
 

@@ -2,13 +2,16 @@ package com.example.ticket_booking_system.controller;
 
 import com.example.ticket_booking_system.Enum.SeatStatus;
 import com.example.ticket_booking_system.dto.reponse.seat.SeatResponse;
+import com.example.ticket_booking_system.dto.request.seat.AddSeatRequest;
 import com.example.ticket_booking_system.dto.request.seat.SeatRequest;
 import com.example.ticket_booking_system.entity.Seat;
 import com.example.ticket_booking_system.mapper.SeatMapper;
 import com.example.ticket_booking_system.service.PriceService;
 import com.example.ticket_booking_system.service.SeatService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,4 +64,12 @@ public class SeatController {
         return ResponseEntity.ok(SeatMapper.toResponse(seat));
     }
 
+    @PostMapping("theater/{theaterId}/add-seats")
+    public ResponseEntity<Void> addSeatsToTheater(
+            @PathVariable Long theaterId,
+            @Valid @RequestBody AddSeatRequest request
+    ) {
+        seatService.addSeats(theaterId, request.getSeats()); // Gửi list DTO con vào Service
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 }
