@@ -8,29 +8,32 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "tblBookingDetail")
+@Table(name = "tblBookingComboDetail") // Bảng chi tiết đồ ăn
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BookingDetail {
+public class BookingComboDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bookingDetailID;
+    private Long bookingComboDetailID;
 
-    // Liên kết về Hóa đơn tổng
+    // 1. Thuộc về Hóa đơn nào
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bookingID", nullable = false)
     private Booking booking;
 
-    // Ghế nào được đặt
+    // 2. Combo (sản phẩm) nào
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seatID", nullable = false)
-    private Seat seat;
+    @JoinColumn(name = "comboID", nullable = false)
+    private Combo combo;
 
-    // Giá của 1 ghế này (snapshot)
+    // 3. Số lượng mua
     @Column(nullable = false)
-    private Float price;
+    private Integer quantity;
 
-
+    // 4. "Snapshot" giá tại thời điểm mua
+    // don gia
+    @Column(nullable = false)
+    private Float unitPrice; //
 }
