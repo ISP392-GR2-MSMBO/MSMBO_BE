@@ -64,7 +64,7 @@ public class UserController {
             @RequestParam Role newRole) {
         return ResponseEntity.ok(userService.updateUserRole(id, newRole));
     }
-    
+
     // Xác thực email khi người dùng bấm link trong mail
     @GetMapping("/verify-email")
     public ResponseEntity<String> verifyEmail(@RequestParam String token) {
