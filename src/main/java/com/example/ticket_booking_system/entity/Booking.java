@@ -3,6 +3,7 @@ package com.example.ticket_booking_system.entity;
 import com.example.ticket_booking_system.Enum.BookingStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,9 +12,10 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "tblBooking", schema = "dbo")
+@Table(name = "tblBooking")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Booking {
 
     @Id
@@ -21,22 +23,28 @@ public class Booking {
     private Long bookingID;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "showtimeID", nullable = false)
-    private Showtime showtime;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userID", nullable = false)
     private User user;
 
-    @Column(name = "bookingDate", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "showtimeID", nullable = false)
+    private Showtime showtime;
+
+    @Column(nullable = false)
     private LocalDate bookingDate;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private BookingStatus status; // (PENDING, CONFIRMED, CANCELLED)
+    private BookingStatus status;
 
+    @Column(nullable = false)
+    private Float totalPrice; // Tổng tiền cuối cùng (Snapshot)
+
+    // Liên kết đến chi tiết GHẾ
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BookingDetail> bookingDetails;
 
-
+    // Liên kết đến chi tiết COMBO
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<BookingComboDetail> bookingComboDetails;
 }
