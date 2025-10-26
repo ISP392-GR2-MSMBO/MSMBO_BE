@@ -36,7 +36,9 @@ public enum ErrorCode {
     SEAT_TYPE_NOT_FOUND(1029, "Seat type not found"),
     SEAT_ALREADY_EXISTS(1030, "Seat already exists, Can not add"),
     SEAT_ALREADY_BOOKED(1031, "seat already booked!"),
-    COMBO_NOT_FOUND(1032, "Combo not found!");
+    COMBO_NOT_FOUND(1032, "Combo not found!"),
+    BOOKING_NOT_FOUND(1033, "Booking not found!"),
+    BOOKING_DETAIL_NOT_FOUND(1034, "Booking detail (seat) not found!");
     {
     }
 
