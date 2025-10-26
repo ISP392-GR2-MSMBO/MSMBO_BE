@@ -2,13 +2,16 @@ package com.example.ticket_booking_system.service;
 
 import com.example.ticket_booking_system.Enum.BookingStatus;
 import com.example.ticket_booking_system.Enum.SeatStatus;
+import com.example.ticket_booking_system.dto.reponse.booking.BookingDetailResponse;
 import com.example.ticket_booking_system.dto.reponse.booking.BookingResponse;
+import com.example.ticket_booking_system.dto.reponse.seat.SeatResponse;
 import com.example.ticket_booking_system.dto.request.booking.BookingComboRequest;
 import com.example.ticket_booking_system.dto.request.booking.CreateBookingRequest;
 import com.example.ticket_booking_system.entity.*;
 import com.example.ticket_booking_system.exception.AppException;
 import com.example.ticket_booking_system.exception.ErrorCode;
 import com.example.ticket_booking_system.mapper.BookingMapper;
+import com.example.ticket_booking_system.mapper.SeatMapper;
 import com.example.ticket_booking_system.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,19 +20,26 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class BookingService {
 
-    // Inject tất cả Repository cần thiết
+    // --- Inject tất cả Repository và Service cần thiết ---
     private final BookingRepository bookingRepository;
+    private final BookingDetailRepository bookingDetailRepository;
+    private final BookingComboDetailRepository bookingComboDetailRepository;
     private final UserRepository userRepository;
     private final ShowtimeRepository showtimeRepository;
     private final SeatRepository seatRepository;
     private final ComboRepository comboRepository;
     private final PriceService priceService; // Dùng để tính giá ghế
 
+    /**
+     * CHỨC NĂNG 1: TẠO BOOKING MỚI (ĐẶT VÉ)
+     */
     @Transactional // Rất quan trọng: Đảm bảo tất cả hoặc không gì cả
     public BookingResponse createBooking(CreateBookingRequest request) {
 
@@ -40,7 +50,13 @@ public class BookingService {
         Showtime showtime = showtimeRepository.findById(request.getShowtimeID())
                 .orElseThrow(() -> new AppException(ErrorCode.SHOWTIME_NOT_FOUND));
 
-        // 2. Tạo Hóa đơn tổng (Booking)
+        // 2. Lấy danh sách ghế đã bán CHO SUẤT CHIẾU NÀY (Logic an toàn)
+        List<BookingDetail> soldDetails = bookingDetailRepository.findAllByBooking_Showtime_ShowtimeID(request.getShowtimeID());
+        Set<Long> soldSeatIds = soldDetails.stream()
+                .map(detail -> detail.getSeat().getSeatID())
+                .collect(Collectors.toSet());
+
+        // 3. Tạo Hóa đơn tổng (Booking)
         Booking booking = Booking.builder()
                 .user(user)
                 .showtime(showtime)
@@ -49,66 +65,184 @@ public class BookingService {
                 .build();
 
         float totalSeatPrice = 0;
-        List<BookingDetail> seatDetails = new ArrayList<>();
+        List<BookingDetail> seatDetailsList = new ArrayList<>();
 
-        // 3. Xử lý Ghế (BookingDetail)
+        // 4. Xử lý Ghế (BookingDetail)
         for (Long seatID : request.getSeatIDs()) {
             Seat seat = seatRepository.findById(seatID)
                     .orElseThrow(() -> new AppException(ErrorCode.SEAT_NOT_FOUND));
 
-            // 3.1. Kiểm tra ghế đã bị đặt chưa
-            if (seat.getStatus() != SeatStatus.EMPTY) {
+            // 4.1. Kiểm tra ghế có bị admin khóa (hỏng) không
+            if (seat.getStatus() == SeatStatus.UNAVAILABLE) {
+                throw new AppException(ErrorCode.SEAT_UNAVAILABLE_DUE_TO_DAMAGE);
+            }
+
+            // 4.2. Kiểm tra ghế đã bị bán (cho suất chiếu này) chưa
+            if (soldSeatIds.contains(seatID)) {
                 throw new AppException(ErrorCode.SEAT_ALREADY_BOOKED);
             }
 
-            // 3.2. Lấy giá ghế (đã tính khuyến mãi)
+            // 4.3. Lấy giá ghế (đã tính khuyến mãi)
             Float seatPrice = priceService.calculateFinalPrice(seat.getSeatType());
             totalSeatPrice += seatPrice;
 
-            // 3.3. Tạo chi tiết ghế
+            // 4.4. Tạo chi tiết ghế
             BookingDetail detail = BookingDetail.builder()
                     .booking(booking) // Liên kết về hóa đơn tổng
                     .seat(seat)
-                    .price(seatPrice) // giá ghế
+                    .price(seatPrice) // "Snapshot" giá ghế
                     .build();
-            seatDetails.add(detail);
-
-            // 3.4. (highRisk) Chuyển trạng thái ghế
-            seat.setStatus(SeatStatus.SOLD);
-            seatRepository.save(seat);
+            seatDetailsList.add(detail);
         }
-        booking.setBookingDetails(seatDetails); // Gán chi tiết ghế vào Hóa đơn
+        booking.setBookingDetails(seatDetailsList); // Gán ds chi tiết ghế vào Hóa đơn
 
-        // 4. Xử lý Combo (BookingComboDetail)
+        // 5. Xử lý Combo (BookingComboDetail)
         float totalComboPrice = 0;
-        List<BookingComboDetail> comboDetails = new ArrayList<>();
+        List<BookingComboDetail> comboDetailsList = new ArrayList<>();
 
-        if (request.getCombos() != null) {
+        if (request.getCombos() != null && !request.getCombos().isEmpty()) {
             for (BookingComboRequest comboReq : request.getCombos()) {
                 Combo combo = comboRepository.findById(comboReq.getComboID())
                         .orElseThrow(() -> new AppException(ErrorCode.COMBO_NOT_FOUND));
 
-                // 4.1. giá combo
+                // 5.1. "Snapshot" giá combo
                 Float comboPrice = combo.getUnitPrice();
                 totalComboPrice += (comboPrice * comboReq.getQuantity());
 
-                // 4.2. Tạo chi tiết combo
+                // 5.2. Tạo chi tiết combo
                 BookingComboDetail detail = BookingComboDetail.builder()
                         .booking(booking) // Liên kết về hóa đơn tổng
                         .combo(combo)
                         .quantity(comboReq.getQuantity())
-                        .unitPrice(comboPrice) // giá 1 combo
+                        .unitPrice(comboPrice) // "Snapshot" giá 1 combo
                         .build();
-                comboDetails.add(detail);
+                comboDetailsList.add(detail);
             }
         }
-        booking.setBookingComboDetails(comboDetails); // Gán ds chi tiết combo vào Hóa đơn
+        booking.setBookingComboDetails(comboDetailsList); // Gán ds chi tiết combo vào Hóa đơn
 
-        // 5. Tính tổng tiền cuối cùng và Lưu
+        // 6. Tính tổng tiền cuối cùng và Lưu
         booking.setTotalPrice(totalSeatPrice + totalComboPrice);
-        Booking savedBooking = bookingRepository.save(booking); // Lưu hóa đơn (tự lưu các Detail)
+        Booking savedBooking = bookingRepository.save(booking); // Lưu hóa đơn (sẽ tự lưu các Detail)
 
-        // 6. Map sang Response DTO để trả về
+        // 7. Map sang Response DTO để trả về
         return BookingMapper.toBookingResponse(savedBooking);
+    }
+
+    /**
+     * CHỨC NĂNG 2: LẤY SƠ ĐỒ GHẾ (CHO 1 SUẤT CHIẾU) - Trả về TẤT CẢ ghế
+     */
+    public List<SeatResponse> getSeatMapForShowtime(Long showtimeId) {
+
+        // 1. Tìm showtime để lấy theaterId
+        Showtime showtime = showtimeRepository.findById(showtimeId)
+                .orElseThrow(() -> new AppException(ErrorCode.SHOWTIME_NOT_FOUND));
+        Long theaterId = showtime.getTheater().getTheaterID();
+
+        // 2. Lấy TẤT CẢ ghế có trong rạp (SƠ ĐỒ GỐC)
+        List<Seat> allSeatsInTheater = seatRepository.findByTheaterId(theaterId);
+
+        // 3. Lấy TẤT CẢ ghế ĐÃ BÁN (SOLD) cho suất chiếu này
+        List<BookingDetail> soldDetails = bookingDetailRepository.findAllByBooking_Showtime_ShowtimeID(showtimeId);
+        Set<Long> soldSeatIds = soldDetails.stream()
+                .map(detail -> detail.getSeat().getSeatID())
+                .collect(Collectors.toSet());
+
+        // 4. Duyệt qua SƠ ĐỒ GỐC (allSeatsInTheater)
+        return allSeatsInTheater.stream().map(seat -> {
+
+            // Tính giá (đã có KM)
+            Float finalPrice = priceService.calculateFinalPrice(seat.getSeatType());
+            // Map sang DTO
+            SeatResponse response = SeatMapper.toResponse(seat, finalPrice);
+
+            // 5. Gán trạng thái (Status)
+            // Ưu tiên 1: Ghế bị admin khóa (hỏng)
+            if (seat.getStatus() == SeatStatus.UNAVAILABLE) {
+                response.setStatus(SeatStatus.UNAVAILABLE.name());
+            }
+            // Ưu tiên 2: Ghế đã bán (cho suất này)
+            else if (soldSeatIds.contains(seat.getSeatID())) {
+                response.setStatus("SOLD"); // Trạng thái "SOLD" này là động
+            }
+            // Mặc định: Ghế còn trống
+            else {
+                response.setStatus(SeatStatus.AVAILABLE.name());
+            }
+
+            return response;
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * CHỨC NĂNG 3: LẤY DANH SÁCH CHỈ NHỮNG GHẾ ĐÃ BÁN (HÀM MỚI)
+     */
+    public List<SeatResponse> getSoldSeatsForShowtime(Long showtimeId) {
+
+        // 1. Kiểm tra xem showtime có tồn tại không
+        if (!showtimeRepository.existsById(showtimeId)) {
+            throw new AppException(ErrorCode.SHOWTIME_NOT_FOUND);
+        }
+
+        // 2. Lấy TẤT CẢ ghế ĐÃ BÁN (SOLD) cho suất chiếu này
+        List<BookingDetail> soldDetails = bookingDetailRepository.findAllByBooking_Showtime_ShowtimeID(showtimeId);
+
+        // 3. Chuyển danh sách chi tiết (BookingDetail) sang danh sách ghế (SeatResponse)
+        return soldDetails.stream()
+                .map(detail -> {
+                    Seat seat = detail.getSeat();
+
+                    // Lấy giá đã "snapshot" lúc bán
+                    Float priceAtBooking = detail.getPrice();
+
+                    // Map sang DTO (Dùng mapper 2 tham số)
+                    SeatResponse response = SeatMapper.toResponse(seat, priceAtBooking);
+
+                    // Gán trạng thái
+                    response.setStatus("SOLD");
+
+                    return response;
+                })
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * CHỨC NĂNG 4: LẤY LỊCH SỬ ĐẶT VÉ CỦA USER
+     */
+    public List<BookingResponse> getBookingsByUserId(Long userId) {
+
+        if (!userRepository.existsById(userId)) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        // Gọi hàm repository
+        List<Booking> bookings = bookingRepository.findByUserUserIDOrderByBookingDateDesc(userId);
+
+        // Map kết quả sang DTO
+        return bookings.stream()
+                .map(BookingMapper::toBookingResponse)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * CHỨC NĂNG 5: LẤY CHI TIẾT 1 VÉ (BOOKING) CỤ THỂ
+     */
+    public BookingResponse getBookingById(Long bookingId) {
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
+
+        return BookingMapper.toBookingResponse(booking);
+    }
+
+    /**
+     * CHỨC NĂNG 6: LẤY CHI TIẾT 1 GHẾ (BookingDetail) CỤ THỂ
+     */
+    public BookingDetailResponse getBookingDetailById(Long bookingDetailId) {
+
+        BookingDetail detail = bookingDetailRepository.findById(bookingDetailId)
+                .orElseThrow(() -> new AppException(ErrorCode.BOOKING_DETAIL_NOT_FOUND));
+
+        return BookingMapper.toBookingDetailResponse(detail);
     }
 }
