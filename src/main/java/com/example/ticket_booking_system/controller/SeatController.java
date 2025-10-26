@@ -4,6 +4,7 @@ import com.example.ticket_booking_system.Enum.SeatStatus;
 import com.example.ticket_booking_system.dto.reponse.seat.SeatResponse;
 import com.example.ticket_booking_system.dto.request.seat.AddSeatRequest;
 import com.example.ticket_booking_system.dto.request.seat.SeatRequest;
+import com.example.ticket_booking_system.dto.request.seat.UpdateMultipleSeatRequest;
 import com.example.ticket_booking_system.entity.Seat;
 import com.example.ticket_booking_system.mapper.SeatMapper;
 import com.example.ticket_booking_system.service.PriceService;
@@ -62,6 +63,14 @@ public class SeatController {
         SeatStatus status = SeatStatus.valueOf(request.getStatus().name().toUpperCase());
         Seat seat = seatService.updateSeatStatus(request.getSeatID(), status);
         return ResponseEntity.ok(SeatMapper.toResponse(seat));
+    }
+
+    @PutMapping("/seats/status")
+    public ResponseEntity<List<SeatResponse>> updateMultipleSeatStatus( @Valid @RequestBody UpdateMultipleSeatRequest request){
+
+        List<Seat> updateSeats = seatService.updateMultipleSeatsStatus(request.getSeatIDs(), request.getNewStatus());
+        List<SeatResponse> responses = updateSeats.stream().map(SeatMapper::toResponse).toList();
+        return ResponseEntity.ok(responses);
     }
 
     @PostMapping("theater/{theaterId}/add-seats")

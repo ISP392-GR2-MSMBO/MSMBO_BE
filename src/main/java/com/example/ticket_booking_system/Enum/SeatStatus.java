@@ -3,9 +3,10 @@ package com.example.ticket_booking_system.Enum;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum SeatStatus {
+    AVAILABLE,
+    UNAVAILABLE,
     EMPTY,
-    SOLD,
-    UNAVAILABLE;
+    SOLD;
 
     @JsonCreator
     public static SeatStatus fromString(String value) {
