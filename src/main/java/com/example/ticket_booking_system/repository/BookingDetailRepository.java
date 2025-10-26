@@ -4,7 +4,9 @@ import com.example.ticket_booking_system.entity.BookingDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface BookingDetailRepository extends JpaRepository<BookingDetail, Long> {
-    // không hàm custom ở đây
+    List<BookingDetail> findAllByBooking_Showtime_ShowtimeID(Long showtimeId);
 }
