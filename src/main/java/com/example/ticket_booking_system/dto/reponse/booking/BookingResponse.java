@@ -31,5 +31,4 @@ public class BookingResponse {
 
     // --- Chi tiết vé ---
     private List<BookingDetailResponse> seats; // Danh sách ghế
-    private List<BookingComboDetailResponse> combos; // Danh sách combo
 }

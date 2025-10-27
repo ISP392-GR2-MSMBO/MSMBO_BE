@@ -1,6 +1,5 @@
 package com.example.ticket_booking_system.mapper;
 
-import com.example.ticket_booking_system.dto.reponse.booking.BookingComboDetailResponse;
 import com.example.ticket_booking_system.dto.reponse.booking.BookingDetailResponse;
 import com.example.ticket_booking_system.dto.reponse.booking.BookingResponse;
 import com.example.ticket_booking_system.entity.*;
@@ -23,11 +22,6 @@ public class BookingMapper {
                 .map(BookingMapper::toBookingDetailResponse)
                 .collect(Collectors.toList());
 
-        // Map chi tiết combo
-        List<BookingComboDetailResponse> comboResponses = booking.getBookingComboDetails()
-                .stream()
-                .map(BookingMapper::toBookingComboDetailResponse)
-                .collect(Collectors.toList());
 
         return BookingResponse.builder()
                 // Thông tin vé
@@ -46,7 +40,6 @@ public class BookingMapper {
                 .startTime(showtime.getStartTime())
                 // Chi tiết
                 .seats(seatResponses)
-                .combos(comboResponses)
                 .build();
     }
 
@@ -59,14 +52,5 @@ public class BookingMapper {
                 .build();
     }
 
-    // Hàm phụ: Map chi tiết 1 combo
-    public static BookingComboDetailResponse toBookingComboDetailResponse(BookingComboDetail detail) {
-        float totalPrice = detail.getUnitPrice() * detail.getQuantity();
-        return BookingComboDetailResponse.builder()
-                .comboName(detail.getCombo().getName())
-                .quantity(detail.getQuantity())
-                .unitPrice(detail.getUnitPrice())
-                .totalPrice(totalPrice)
-                .build();
-    }
+
 }

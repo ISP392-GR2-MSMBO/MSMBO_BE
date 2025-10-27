@@ -19,7 +19,4 @@ public class CreateBookingRequest {
 
     @NotEmpty(message = "You must select at least one seat")
     private List<Long> seatIDs;
-
-    @Valid // Đảm bảo các phần tử bên trong List validate
-    private List<BookingComboRequest> combos; // Có thể là list rỗng
 }

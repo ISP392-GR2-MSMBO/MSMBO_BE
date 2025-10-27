@@ -5,7 +5,6 @@ import com.example.ticket_booking_system.Enum.SeatStatus;
 import com.example.ticket_booking_system.dto.reponse.booking.BookingDetailResponse;
 import com.example.ticket_booking_system.dto.reponse.booking.BookingResponse;
 import com.example.ticket_booking_system.dto.reponse.seat.SeatResponse;
-import com.example.ticket_booking_system.dto.request.booking.BookingComboRequest;
 import com.example.ticket_booking_system.dto.request.booking.CreateBookingRequest;
 import com.example.ticket_booking_system.entity.*;
 import com.example.ticket_booking_system.exception.AppException;
@@ -30,11 +29,9 @@ public class BookingService {
     // --- Inject tất cả Repository và Service cần thiết ---
     private final BookingRepository bookingRepository;
     private final BookingDetailRepository bookingDetailRepository;
-    private final BookingComboDetailRepository bookingComboDetailRepository;
     private final UserRepository userRepository;
     private final ShowtimeRepository showtimeRepository;
     private final SeatRepository seatRepository;
-    private final ComboRepository comboRepository;
     private final PriceService priceService; // Dùng để tính giá ghế
 
     /**
@@ -96,33 +93,10 @@ public class BookingService {
         }
         booking.setBookingDetails(seatDetailsList); // Gán ds chi tiết ghế vào Hóa đơn
 
-        // 5. Xử lý Combo (BookingComboDetail)
-        float totalComboPrice = 0;
-        List<BookingComboDetail> comboDetailsList = new ArrayList<>();
 
-        if (request.getCombos() != null && !request.getCombos().isEmpty()) {
-            for (BookingComboRequest comboReq : request.getCombos()) {
-                Combo combo = comboRepository.findById(comboReq.getComboID())
-                        .orElseThrow(() -> new AppException(ErrorCode.COMBO_NOT_FOUND));
-
-                // 5.1. "Snapshot" giá combo
-                Float comboPrice = combo.getUnitPrice();
-                totalComboPrice += (comboPrice * comboReq.getQuantity());
-
-                // 5.2. Tạo chi tiết combo
-                BookingComboDetail detail = BookingComboDetail.builder()
-                        .booking(booking) // Liên kết về hóa đơn tổng
-                        .combo(combo)
-                        .quantity(comboReq.getQuantity())
-                        .unitPrice(comboPrice) // "Snapshot" giá 1 combo
-                        .build();
-                comboDetailsList.add(detail);
-            }
-        }
-        booking.setBookingComboDetails(comboDetailsList); // Gán ds chi tiết combo vào Hóa đơn
 
         // 6. Tính tổng tiền cuối cùng và Lưu
-        booking.setTotalPrice(totalSeatPrice + totalComboPrice);
+        booking.setTotalPrice(totalSeatPrice);
         Booking savedBooking = bookingRepository.save(booking); // Lưu hóa đơn (sẽ tự lưu các Detail)
 
         // 7. Map sang Response DTO để trả về
