@@ -43,8 +43,4 @@ public class Booking {
     // Liên kết đến chi tiết GHẾ
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BookingDetail> bookingDetails;
-
-    // Liên kết đến chi tiết COMBO
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<BookingComboDetail> bookingComboDetails;
 }
