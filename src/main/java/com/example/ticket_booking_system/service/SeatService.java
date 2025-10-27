@@ -39,18 +39,10 @@ public class SeatService {
         Seat seat = seatRepository.findById(seatId)
                 .orElseThrow(() -> new AppException(ErrorCode.SEAT_NOT_FOUND));
 
-        // Nếu ghế bị hỏng thì không cho cập nhật trạng thái thành EMPTY hoặc SOLD
-//        if (seat.isBroken() && (newStatus == SeatStatus.EMPTY || newStatus == SeatStatus.SOLD)) {
-//            throw new AppException(ErrorCode.SEAT_UNAVAILABLE_DUE_TO_DAMAGE);
-//        }
+        SeatStatus currentStatus = seat.getStatus();
 
-        if (seat.getStatus() == SeatStatus.UNAVAILABLE && newStatus == SeatStatus.SOLD) {
-            throw new AppException(ErrorCode.SEAT_UNAVAILABLE_DUE_TO_DAMAGE);
-        }
-
-        // Nếu ghế đã bán thì không cho chuyển về EMPTY
-        if (seat.getStatus() == SeatStatus.SOLD && newStatus == SeatStatus.EMPTY) {
-            throw new AppException(ErrorCode.INVALID_SEAT_STATUS_TRANSITION);
+        if(currentStatus == newStatus){
+            return seat;
         }
 
         // Cập nhật trạng thái ghế
@@ -58,6 +50,39 @@ public class SeatService {
 
         // Lưu lại vào DB
         return seatRepository.save(seat);
+    }
+
+    @Transactional
+    public List<Seat> updateMultipleSeatsStatus(List<Long> seatIds, SeatStatus newStatus){
+
+        // 1. Check if the target status is valid (should only be AVAILABLE or UNAVAILABLE)
+        if (newStatus != SeatStatus.AVAILABLE && newStatus != SeatStatus.UNAVAILABLE) {
+            // You might need to create this ErrorCode
+            throw new AppException(ErrorCode.INVALID_SEAT_STATUS_TRANSITION);
+        }
+
+        // 2. Fetch all seats at once
+        List<Seat> seats = seatRepository.findAllById(seatIds);
+
+        // 3. Verify all seats were found
+        if (seats.size() != seatIds.size()) {
+            // Consider providing more detail about which IDs weren't found if possible
+            throw new AppException(ErrorCode.SEAT_NOT_FOUND);
+        }
+
+        // 4. Iterate and update status in memory
+        for (Seat seat : seats) {
+            // Only update if the status is actually different
+            if (seat.getStatus() != newStatus) {
+                // No complex business logic needed here anymore,
+                // as we only allow AVAILABLE <-> UNAVAILABLE transitions.
+                seat.setStatus(newStatus);
+            }
+            // If seat.getStatus() == newStatus, we do nothing and continue
+        }
+
+        // 5. Save all changes at once
+        return seatRepository.saveAll(seats);
     }
 
     public Seat getSeatById(Long seatId) {
@@ -89,7 +114,7 @@ public class SeatService {
             newSeat.setRow(seatReq.getRowName());
             newSeat.setNumber(seatReq.getNumber());
             newSeat.setSeatType(seatType);
-            newSeat.setStatus(SeatStatus.EMPTY);
+            newSeat.setStatus(SeatStatus.UNAVAILABLE);
 
             seatRepository.save(newSeat);
         }

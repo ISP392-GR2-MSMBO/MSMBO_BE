@@ -83,7 +83,7 @@ public class UserService {
 
         String newToken = generateToken();
         user.setEmailVerifyToken(newToken);
-        user.setEmailVerifyTokenExp(LocalDateTime.now().plusHours(24));
+        user.setEmailVerifyTokenExp(LocalDateTime.now().plusMinutes(20));
         userRepository.save(user);
 
         String link = baseUrl + "/api/users/verify-email?token=" + newToken;
