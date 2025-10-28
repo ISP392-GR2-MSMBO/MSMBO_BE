@@ -25,10 +25,11 @@ public class PaymentController {
             throws JsonProcessingException, IllegalArgumentException {
         try {
             WebhookData data = payOS.webhooks().verify(request);
-            System.out.println(data);
+            System.out.println("Payment data");
             return ApiResponse.success("Webhook delivered", data);
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("payment error");
             return ApiResponse.error(e.getMessage());
         }
     }
