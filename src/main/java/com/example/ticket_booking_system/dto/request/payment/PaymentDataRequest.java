@@ -1,18 +1,15 @@
+// src/main/java/com/example/ticket_booking_system/dto/request/payment/PaymentDataRequest.java
 package com.example.ticket_booking_system.dto.request.payment;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.math.BigDecimal;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
 @Builder
 public class PaymentDataRequest {
-
-    private Long orderCode;
-    private Long amount;
+    private long orderCode;
+    private BigDecimal amount; // Sử dụng BigDecimal
     private String description;
     private String cancelUrl;
     private String returnUrl;
