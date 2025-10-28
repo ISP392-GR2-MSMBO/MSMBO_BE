@@ -1,37 +1,23 @@
-//package com.example.ticket_booking_system.service;
-//
-//import com.example.ticket_booking_system.dto.request.payment.PaymentDataRequest;
-//import org.springframework.stereotype.Service;
-//import vn.payos.PayOS;
-//import vn.payos.model.v2.paymentRequests.CreatePaymentLinkRequest;
-//import vn.payos.model.v2.paymentRequests.CreatePaymentLinkResponse;
-//import vn.payos.model.webhooks.WebhookData;
-//
-//@Service
-//public class PayOSService {
-//
-//    private final PayOS payOS;
-//
-//    // Khuyên dùng: đọc từ ENV (PAYOS_CLIENT_ID / PAYOS_API_KEY / PAYOS_CHECKSUM_KEY)
-//    public PayOSService() {
-//        this.payOS = PayOS.fromEnv(); // hoặc new PayOS(ClientOptions.builder()...)
+package com.example.ticket_booking_system.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import vn.payos.PayOS;
+import vn.payos.model.webhooks.Webhook;
+import vn.payos.model.webhooks.WebhookData;
+
+
+@Service
+@RequiredArgsConstructor
+public class PayOSService {
+
+    private final PayOS payOS; // cấu hình qua @Bean hoặc @ConfigurationProperties
+
+//    public CheckoutResponseData createPaymentLink(PaymentData data) throws Exception {
+//        return payOS.createPaymentLink(data);
 //    }
-//
-//    public String createPaymentLink(PaymentDataRequest request) throws Exception {
-//        CreatePaymentLinkRequest data = CreatePaymentLinkRequest.builder()
-//                .orderCode(request.getOrderCode()) // long
-//                .amount(request.getAmount().longValue()) // v2 dùng Long
-//                .description(request.getDescription())
-//                .cancelUrl(request.getCancelUrl())
-//                .returnUrl(request.getReturnUrl())
-//                .build();
-//
-//        CreatePaymentLinkResponse res = payOS.paymentRequests().create(data);
-//        return res.getCheckoutUrl();
-//    }
-//
-//    public WebhookData verifyWebhookData(String body) throws Exception {
-//        // V2: xác minh qua module webhooks, chỉ cần body
-//        return payOS.webhooks().verify(body);
-//    }
-//}
+
+    public WebhookData verifyPaymentWebhookData(Webhook body) throws Exception {
+        return payOS.webhooks().verify(body); // SDK 2.x
+    }
+}

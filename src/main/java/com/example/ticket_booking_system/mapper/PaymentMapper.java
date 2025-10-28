@@ -9,7 +9,7 @@ import com.example.ticket_booking_system.dto.reponse.payment.PaymentResponseDTO;
 @Mapper(componentModel = "spring")
 public interface PaymentMapper {
 
-    PaymentMapper INSTANCE = Mappers.getMapper(PaymentMapper.class);
+
 
     @Mapping(source = "booking.bookingID", target = "bookingID")
     @Mapping(source = "status", target = "status")
