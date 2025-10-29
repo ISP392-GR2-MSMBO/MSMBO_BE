@@ -38,7 +38,8 @@ public enum ErrorCode {
     SEAT_ALREADY_BOOKED(1031, "seat already booked!"),
     COMBO_NOT_FOUND(1032, "Combo not found!"),
     BOOKING_NOT_FOUND(1033, "Booking not found!"),
-    BOOKING_DETAIL_NOT_FOUND(1034, "Booking detail (seat) not found!");
+    BOOKING_DETAIL_NOT_FOUND(1034, "Booking detail (seat) not found!"),
+    REPORT_NOT_FOUND(1035, "Report not found!");
     {
     }
 
