@@ -31,6 +31,7 @@ public class PaymentController {
         try {
             WebhookData data = payOS.webhooks().verify(request);
             logger.info("Payment data");
+            logger.info(String.valueOf(data));
             return ApiResponse.success("Webhook delivered", data);
         } catch (Exception e) {
             e.printStackTrace();
