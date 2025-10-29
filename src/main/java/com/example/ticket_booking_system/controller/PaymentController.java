@@ -26,7 +26,7 @@ public class PaymentController {
     }
 
     @PostMapping(path = "/payos_transfer_handler")
-    public ApiResponse<WebhookData> payosTransferHandler(@RequestBody PaymentDataRequest request)
+    public ApiResponse<WebhookData> payosTransferHandler(@RequestBody Object request)
             throws JsonProcessingException, IllegalArgumentException {
         try {
             WebhookData data = payOS.webhooks().verify(request);
