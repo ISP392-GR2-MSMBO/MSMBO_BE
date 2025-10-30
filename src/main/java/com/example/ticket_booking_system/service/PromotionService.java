@@ -40,6 +40,14 @@ public class PromotionService {
 
         promotion.setApplicableSeatTypes(new HashSet<>());
 
+        if (request.getSeatTypeIds() != null && !request.getSeatTypeIds().isEmpty()) {
+            // 1. Tìm tất cả SeatType Entities từ list ID
+            List<SeatType> seatTypes = seatTypeRepository.findAllById(request.getSeatTypeIds());
+
+            // 2. Thêm chúng vào Set của promotion
+            promotion.getApplicableSeatTypes().addAll(seatTypes);
+        }
+
         return promotionRepository.save(promotion);
     }
 
@@ -59,6 +67,17 @@ public class PromotionService {
 
         // 4. Lưu lại
         promotionRepository.save(promotion);
+    }
+
+    //lay danh sách tất cả khuyến mãi
+    public List<Promotion> getAllPromotions(){
+
+        return promotionRepository.findAll();
+    }
+
+    //lấy chi tiết 1 khuyến mãi bằng ID
+    public Promotion getPromotionById(Long promotionId){
+        return promotionRepository.findById(promotionId).orElseThrow(() -> new AppException(ErrorCode.PROMOTION_NOT_FOUND));
     }
 
     @Transactional
