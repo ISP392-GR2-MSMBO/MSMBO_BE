@@ -39,6 +39,21 @@ public class PromotionController {
         return ResponseEntity.ok().build(); // Trả về 200 OK
     }
 
+    @GetMapping
+    public ResponseEntity<List<Promotion>> getAllPromotions() {
+        List<Promotion> promotions = promotionService.getAllPromotions();
+        return ResponseEntity.ok(promotions);
+    }
+
+    /**
+     * API MỚI: Lấy MỘT khuyến mãi theo ID
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Promotion> getPromotionById(@PathVariable("id") Long promotionId) {
+        Promotion promotion = promotionService.getPromotionById(promotionId);
+        return ResponseEntity.ok(promotion);
+    }
+
     @PatchMapping("/{id}/status")
     public ResponseEntity<Promotion> updatePromotionStatus(
             @PathVariable("id") Long promotionId,
