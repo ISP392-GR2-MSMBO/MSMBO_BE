@@ -1,5 +1,6 @@
 package com.example.ticket_booking_system.entity;
 
+import com.example.ticket_booking_system.Enum.BookingDetailStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,5 +33,9 @@ public class BookingDetail {
     @Column(nullable = false)
     private Float price;
 
-
+    // --- THUỘC TÍNH MỚI ---
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private BookingDetailStatus status = BookingDetailStatus.ACTIVE;
 }
