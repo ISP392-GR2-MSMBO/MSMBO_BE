@@ -94,6 +94,8 @@ public class SeatService {
         return seatRepository.findAll();
     }
 
+    public List<SeatType> getAllSeatType(){return seatTypeRepository.findAll();}
+
     @Transactional
     public void addSeats(Long theaterId, List<CreateSingleSeatRequest> seatRequest){
 
