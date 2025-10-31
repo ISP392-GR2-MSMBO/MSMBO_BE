@@ -41,7 +41,8 @@ public enum ErrorCode {
     BOOKING_DETAIL_NOT_FOUND(1034, "Booking detail (seat) not found!"),
     REPORT_NOT_FOUND(1035, "Report not found!"),
     PROMOTION_PERCENTAGE_INVALID(1036, "Percentage discount cannot be greater than 100"),
-    INVALID_PROMOTION_TYPE(1037, "Discount type invalid");
+    INVALID_PROMOTION_TYPE(1037, "Discount type invalid"),
+    EMAIL_NOT_VERIFIED(1038, "Email has not been verified!");
     {
     }
 
