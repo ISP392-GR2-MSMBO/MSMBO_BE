@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.time.temporal.ChronoUnit;
 
 @Service
 @AllArgsConstructor
@@ -28,6 +29,38 @@ public class PromotionService {
 
         if(request.getEndDate().isBefore(request.getStartDate())) {
             throw new AppException(ErrorCode.INVALID_DATE_RANGE);
+        }
+
+        //thêm ràng buộc: 1 promotion chỉ tồn tại được khoảng 2-3 ngày
+        //tính số ngày giữa startDate và endDate
+        long dayBetweenPromotion = ChronoUnit.DAYS.between(request.getStartDate(), request.getEndDate());
+
+        //duration = dayBetweenPromotion + 1
+        if(dayBetweenPromotion < 1 || dayBetweenPromotion > 2){
+
+            throw new AppException(ErrorCode.PROMOTION_DURATION_INVALID);
+        }
+
+        //them ràng buộc: giá trị giảm giá phải hợp lệ
+        if(request.getDiscountValue() <=0){
+            throw new AppException(ErrorCode.PROMOTION_VALUE_INVALID);
+        }
+
+        if("percentage".equals(request.getDiscountType())){
+            if(request.getDiscountValue() > 100){
+                throw new AppException(ErrorCode.PROMOTION_PERCENTAGE_INVALID);
+            }
+        } else if(!"fixed_amount".equals(request.getDiscountType())){
+            throw new AppException(ErrorCode.INVALID_PROMOTION_TYPE);
+        }
+
+
+        //them ràng buộc: không có 2 thanh toán hoạt động cùng lúc
+        boolean hasOverlap = promotionRepository.existsOverlappingPromotion(request.getStartDate(), request.getEndDate());
+
+        if (hasOverlap) {
+
+            throw new AppException(ErrorCode.PROMOTION_OVERLAPS);
         }
 
         Promotion promotion = new Promotion();
@@ -84,6 +117,23 @@ public class PromotionService {
     public Promotion updatePromotionStatus(Long promotionId, boolean isActive) {
         Promotion promotion = promotionRepository.findById(promotionId)
                 .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_NOT_FOUND));
+
+        // --- RÀNG BUỘC MỚI KHI KÍCH HOẠT ---
+        // Nếu bạn đang cố BẬT một khuyến mãi (chuyển từ false -> true)
+        if (isActive && !promotion.isActive()) {
+
+            // Kiểm tra xem nó có bị trùng với các KM khác đang active không
+            // (Chúng ta cần 1 query mới)
+            boolean hasOverlap = promotionRepository.existsOverlappingPromotionWithOthers(
+                    promotion.getStartDate(),
+                    promotion.getEndDate(),
+                    promotionId // Loại trừ chính nó ra khỏi kiểm tra
+            );
+
+            if (hasOverlap) {
+                throw new AppException(ErrorCode.PROMOTION_OVERLAPS);
+            }
+        }
 
         promotion.setActive(isActive);
         return promotionRepository.save(promotion);

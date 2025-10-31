@@ -17,14 +17,14 @@ public enum ErrorCode {
     EMAIL_EXISTED(1010, "Email already exists"),
     PHONE_EXISTED(1011, "Phone already exists"),
     USER_NOT_FOUND(1012, "User not found"),
-    CUSTOMER_NOT_FOUND(1013, "Customer not found"),
+    PROMOTION_VALUE_INVALID(1013, "Discount value must be greater than 0"),
     MOVIE_ALREADY_DELETED(1014, "Movie has already been deleted"),
     MOVIE_DELETED_OR_INACTIVE(1015, "Movie is deleted or inactive"),
     SEAT_NOT_FOUND(1016, "Seat not found"),
     SEAT_UNAVAILABLE_DUE_TO_DAMAGE(1017, "Cannot update seat to SOLD due to broken seat"),
     INVALID_SEAT_STATUS_TRANSITION(1018, "Cannot transfer sold seat to empty seat"),
     CANNOT_EDIT_PUBLISHED(1019, "Published showtime cannot be edited"),
-    SHOWTIME_ALREADY_PUBLISHED(1020, "Showtime already published"),
+    PROMOTION_OVERLAPS(1020, "There was another promotion running during this period"),
     PAST_SHOWTIME_CANNOT_PUBLISH(1021, "Past showtime can not publish"),
     MOVIE_NOT_APPROVED(1022, "Movie is not approved"),
     INVALID_DATE_RANGE(1023, "Date is not in range"),
@@ -36,13 +36,12 @@ public enum ErrorCode {
     SEAT_TYPE_NOT_FOUND(1029, "Seat type not found"),
     SEAT_ALREADY_EXISTS(1030, "Seat already exists, Can not add"),
     SEAT_ALREADY_BOOKED(1031, "seat already booked!"),
-    COMBO_NOT_FOUND(1032, "Combo not found!"),
+    PROMOTION_DURATION_INVALID(1032, "Promotions should only last 2 or 3 days"),
     BOOKING_NOT_FOUND(1033, "Booking not found!"),
     BOOKING_DETAIL_NOT_FOUND(1034, "Booking detail (seat) not found!"),
     REPORT_NOT_FOUND(1035, "Report not found!"),
     PROMOTION_PERCENTAGE_INVALID(1036, "Percentage discount cannot be greater than 100"),
-    INVALID_PROMOTION_TYPE(1037, "Discount type invalid"),
-    EMAIL_NOT_VERIFIED(1038, "Email has not been verified!");
+    INVALID_PROMOTION_TYPE(1037, "Discount type invalid");
     {
     }
 
