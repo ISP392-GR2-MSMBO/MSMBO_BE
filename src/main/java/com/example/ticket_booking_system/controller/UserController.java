@@ -1,6 +1,7 @@
 package com.example.ticket_booking_system.controller;
 
 import com.example.ticket_booking_system.Enum.Role;
+import com.example.ticket_booking_system.dto.request.user.ChangePasswordRequest;
 import com.example.ticket_booking_system.dto.request.user.UserRequest;
 import com.example.ticket_booking_system.dto.reponse.user.UserResponse;
 import com.example.ticket_booking_system.dto.request.user.UserUpdateProfileRequest;
@@ -83,6 +84,18 @@ public class UserController {
     @GetMapping("/{id}/email-status")
     public ResponseEntity<Boolean> getEmailStatus(@PathVariable Long id) {
         return ResponseEntity.ok(userService.isEmailVerified(id));
+    }
+
+    /**
+     * API: Đổi mật khẩu
+     */
+    @PatchMapping("/{id}/change-password")
+    public ResponseEntity<String> changePassword(
+            @PathVariable Long id,
+            @Valid @RequestBody ChangePasswordRequest request
+    ) {
+        userService.changePassword(id, request);
+        return ResponseEntity.ok("Password changed successfully!");
     }
 }
 
