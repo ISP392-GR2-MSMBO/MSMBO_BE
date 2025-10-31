@@ -25,7 +25,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT MONTH(b.bookingDate) as month, SUM(b.totalPrice) as revenue " +
             "FROM Booking b " +
             "WHERE YEAR(b.bookingDate) = :year " +
-            "AND b.status = com.example.ticket_booking_system.Enum.BookingStatus.CONFIRMED " +
+            "AND b.status = BookingStatus.CONFIRMED " +
             "GROUP BY MONTH(b.bookingDate) " +
             "ORDER BY month ASC")
     List<Object[]> getMonthlyRevenueByYear(@Param("year") int year);
