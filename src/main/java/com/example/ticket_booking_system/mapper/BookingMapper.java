@@ -49,6 +49,7 @@ public class BookingMapper {
                 .seatRow(detail.getSeat().getRow())
                 .seatNumber(detail.getSeat().getNumber())
                 .price(detail.getPrice())
+                .status(detail.getStatus())
                 .build();
     }
 

@@ -29,4 +29,32 @@ public interface PromotionRepository extends JpaRepository<Promotion, Long> {
     );
 
     boolean existsByName(String name);
+
+    /**
+     * HÀM MỚI: Kiểm tra xem có KM nào (đang active)
+     * bị trùng lặp ngày với khoảng thời gian mới hay không
+     */
+    @Query("SELECT COUNT(p) > 0 FROM Promotion p " +
+            "WHERE p.isActive = true " + // Chỉ kiểm tra các KM đang hoạt động
+            "AND p.startDate <= :newEndDate " +
+            "AND p.endDate >= :newStartDate")
+    boolean existsOverlappingPromotion(
+            @Param("newStartDate") LocalDate newStartDate,
+            @Param("newEndDate") LocalDate newEndDate
+    );
+
+    /**
+     * HÀM MỚI (3 THAM SỐ): Dùng cho updatePromotionStatus
+     * (Bạn cũng nên thêm hàm này với tên 'WithOthers' để tránh nhầm lẫn)
+     */
+    @Query("SELECT COUNT(p) > 0 FROM Promotion p " +
+            "WHERE p.isActive = true " +
+            "AND p.promotionID != :excludeId " + // <-- Loại trừ chính nó
+            "AND p.startDate <= :newEndDate " +
+            "AND p.endDate >= :newStartDate")
+    boolean existsOverlappingPromotionWithOthers(
+            @Param("newStartDate") LocalDate newStartDate,
+            @Param("newEndDate") LocalDate newEndDate,
+            @Param("excludeId") Long excludeId
+    );
 }

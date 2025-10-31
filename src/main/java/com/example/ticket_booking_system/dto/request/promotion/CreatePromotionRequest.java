@@ -1,5 +1,6 @@
 package com.example.ticket_booking_system.dto.request.promotion;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,4 +30,8 @@ public class CreatePromotionRequest {
 
     @NotNull(message = "Discount Value must not empty")
     private Float discountValue;
+
+    // Không cần @NotEmpty, vì có thể bạn muốn tạo KM mà chưa áp dụng vội
+    @Schema(description = "List (can be empty) of seatTypeID need promotions", example = "[1, 2]")
+    private List<Long> seatTypeIds;
 }

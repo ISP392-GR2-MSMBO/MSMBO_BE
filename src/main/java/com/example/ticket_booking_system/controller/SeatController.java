@@ -6,6 +6,7 @@ import com.example.ticket_booking_system.dto.request.seat.AddSeatRequest;
 import com.example.ticket_booking_system.dto.request.seat.SeatRequest;
 import com.example.ticket_booking_system.dto.request.seat.UpdateMultipleSeatRequest;
 import com.example.ticket_booking_system.entity.Seat;
+import com.example.ticket_booking_system.entity.SeatType;
 import com.example.ticket_booking_system.mapper.SeatMapper;
 import com.example.ticket_booking_system.service.PriceService;
 import com.example.ticket_booking_system.service.SeatService;
@@ -50,6 +51,12 @@ public class SeatController {
         List<Seat> seats = seatService.getAllSeat();
         List<SeatResponse> responses = seats.stream().map(SeatMapper::toResponse).toList();
         return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/seat-type/all")
+    public ResponseEntity<List<SeatType>> viewAllSeatTypes(){
+        List<SeatType> seatTypes = seatService.getAllSeatType();
+        return ResponseEntity.ok(seatTypes);
     }
 
     @GetMapping("/{seatID}")

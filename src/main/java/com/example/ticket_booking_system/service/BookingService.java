@@ -1,5 +1,6 @@
 package com.example.ticket_booking_system.service;
 
+import com.example.ticket_booking_system.Enum.BookingDetailStatus;
 import com.example.ticket_booking_system.Enum.BookingStatus;
 import com.example.ticket_booking_system.Enum.SeatStatus;
 import com.example.ticket_booking_system.dto.reponse.booking.BookingDetailResponse;
@@ -50,6 +51,7 @@ public class BookingService {
         // 2. Lấy danh sách ghế đã bán CHO SUẤT CHIẾU NÀY (Logic an toàn)
         List<BookingDetail> soldDetails = bookingDetailRepository.findAllByBooking_Showtime_ShowtimeID(request.getShowtimeID());
         Set<Long> soldSeatIds = soldDetails.stream()
+                .filter(detail -> detail.getStatus() == BookingDetailStatus.ACTIVE) //
                 .map(detail -> detail.getSeat().getSeatID())
                 .collect(Collectors.toSet());
 
@@ -58,7 +60,7 @@ public class BookingService {
                 .user(user)
                 .showtime(showtime)
                 .bookingDate(LocalDate.now())
-                .status(BookingStatus.CONFIRMED) // Giả sử đã thanh toán
+                .status(BookingStatus.PENDING)
                 .build();
 
         float totalSeatPrice = 0;
@@ -88,6 +90,7 @@ public class BookingService {
                     .booking(booking) // Liên kết về hóa đơn tổng
                     .seat(seat)
                     .price(seatPrice) // "Snapshot" giá ghế
+                    .status(BookingDetailStatus.ACTIVE)
                     .build();
             seatDetailsList.add(detail);
         }
@@ -119,6 +122,7 @@ public class BookingService {
         // 3. Lấy TẤT CẢ ghế ĐÃ BÁN (SOLD) cho suất chiếu này
         List<BookingDetail> soldDetails = bookingDetailRepository.findAllByBooking_Showtime_ShowtimeID(showtimeId);
         Set<Long> soldSeatIds = soldDetails.stream()
+                .filter(detail -> detail.getStatus() == BookingDetailStatus.ACTIVE)
                 .map(detail -> detail.getSeat().getSeatID())
                 .collect(Collectors.toSet());
 
@@ -163,6 +167,7 @@ public class BookingService {
 
         // 3. Chuyển danh sách chi tiết (BookingDetail) sang danh sách ghế (SeatResponse)
         return soldDetails.stream()
+                .filter(detail -> detail.getStatus() == BookingDetailStatus.ACTIVE)
                 .map(detail -> {
                     Seat seat = detail.getSeat();
 
