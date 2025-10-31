@@ -71,6 +71,10 @@ public class PromotionService {
         promotion.setDiscountValue(request.getDiscountValue());
         promotion.setActive(true);
 
+        if (request.getImageUrl() != null && !request.getImageUrl().isBlank()) {
+            promotion.setImageUrl(request.getImageUrl());
+        }
+
         promotion.setApplicableSeatTypes(new HashSet<>());
 
         if (request.getSeatTypeIds() != null && !request.getSeatTypeIds().isEmpty()) {
@@ -137,5 +141,22 @@ public class PromotionService {
 
         promotion.setActive(isActive);
         return promotionRepository.save(promotion);
+    }
+
+    @Transactional
+    public void hardDeletePromotion(Long promotionId) {
+        // 1. Kiểm tra xem khuyến mãi có tồn tại không
+        if (!promotionRepository.existsById(promotionId)) {
+            throw new AppException(ErrorCode.PROMOTION_NOT_FOUND);
+        }
+
+        // 2. (Quan trọng) Cần cân nhắc: Nếu KM đã liên kết với SeatType,
+        // bạn có muốn xóa liên kết trước không?
+        // JpaRepository.deleteById sẽ tự xử lý bảng liên kết (tblPromotion_SeatType)
+        // nếu cascade được cấu hình đúng, nhưng nếu không, bạn cần xóa thủ công.
+        // Tạm thời, JpaRepository.deleteById là đủ.
+
+        // 3. Xóa vĩnh viễn khỏi CSDL
+        promotionRepository.deleteById(promotionId);
     }
 }

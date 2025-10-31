@@ -36,7 +36,7 @@ public enum ErrorCode {
     SEAT_TYPE_NOT_FOUND(1029, "Seat type not found"),
     SEAT_ALREADY_EXISTS(1030, "Seat already exists, Can not add"),
     SEAT_ALREADY_BOOKED(1031, "seat already booked!"),
-    PROMOTION_DURATION_INVALID(1032, "Promotions should only last 2 or 3 days"),
+    PROMOTION_DURATION_INVALID(1032, "Promotions should only last 2 days"),
     BOOKING_NOT_FOUND(1033, "Booking not found!"),
     BOOKING_DETAIL_NOT_FOUND(1034, "Booking detail (seat) not found!"),
     REPORT_NOT_FOUND(1035, "Report not found!"),

@@ -34,4 +34,7 @@ public class CreatePromotionRequest {
     // Không cần @NotEmpty, vì có thể bạn muốn tạo KM mà chưa áp dụng vội
     @Schema(description = "List (can be empty) of seatTypeID need promotions", example = "[1, 2]")
     private List<Long> seatTypeIds;
+
+    @Schema(description = "URL of a image for banner promotion(can be empty)")
+    private String imageUrl;
 }
