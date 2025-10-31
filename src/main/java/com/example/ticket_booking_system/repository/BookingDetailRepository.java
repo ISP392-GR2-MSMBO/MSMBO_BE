@@ -30,7 +30,7 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail, Lo
             "JOIN b.showtime s " +
             "JOIN s.movie m " +
             "WHERE b.bookingDate BETWEEN :startDate AND :endDate " +
-            "AND b.status = com.example.ticket_booking_system.Enum.BookingStatus.CONFIRMED " +
+            "AND b.status = BookingStatus.CONFIRMED " +
             "GROUP BY m.movieName " +
             "ORDER BY COUNT(bd.bookingDetailID) DESC")
     List<TopMovie> findTopSellingMovies(
