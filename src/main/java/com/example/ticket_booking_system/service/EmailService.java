@@ -31,4 +31,22 @@ public class EmailService {
             log.error("Send verification email failed", e);
         }
     }
+
+    public void sendPasswordResetEmail(String to, String resetLink) {
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            helper.setFrom(from, "Movie Booking");
+            helper.setTo(to);
+            helper.setSubject("Reset Your Password"); // Tiêu đề mới
+            helper.setText(
+                    "<p>Nhấn vào link để đặt lại mật khẩu:</p><p><a href=\"" + resetLink + "\">" + resetLink + "</a></p>" +
+                            "<p>Link này sẽ hết hạn sau 20 phút.</p>",
+                    true
+            );
+            mailSender.send(mimeMessage);
+        } catch (MessagingException | java.io.UnsupportedEncodingException e) {
+            log.error("Send password reset email failed", e);
+        }
+    }
 }
