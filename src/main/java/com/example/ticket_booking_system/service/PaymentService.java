@@ -76,6 +76,12 @@ public class PaymentService {
         String description = "Thanh toan ve " + booking.getBookingID();
         long amount = savedPayment.getTotal().longValue(); // Dùng long cho builder
 
+        long bookingId = booking.getBookingID();
+
+        String dynamicReturnUrl = returnUrl + "?bookingId=" + bookingId;
+
+        String dynamicCancelUrl = cancelUrl + "?bookingId=" + bookingId;
+
         // 6. TẠO REQUEST GIỐNG CODE DEMO
 
         // Tạo một "item" (sản phẩm)
@@ -91,8 +97,8 @@ public class PaymentService {
                 .description(description)
                 .amount(amount)
                 .item(item)                   // Thêm item vào
-                .returnUrl(returnUrl)         // Lấy từ properties
-                .cancelUrl(cancelUrl)         // Lấy từ properties
+                .returnUrl(dynamicReturnUrl)         // Lấy từ properties
+                .cancelUrl(dynamicCancelUrl)         // Lấy từ properties
                 .build();
 
         // 7. GỌI SDK THEO CÁCH CỦA DEMO

@@ -35,8 +35,10 @@ public class PriceService {
                 discountPrice = basePrice - p.getDiscountValue();
             }
 
-            if(discountPrice < bestPrice){
-                bestPrice = discountPrice;}
+            Float roundedDiscountPrice = (float) Math.floor(discountPrice);
+
+            if(roundedDiscountPrice < bestPrice){
+                bestPrice = roundedDiscountPrice;}
         }
         return (bestPrice < 0) ? 0: bestPrice; // tranh gia am
     }
