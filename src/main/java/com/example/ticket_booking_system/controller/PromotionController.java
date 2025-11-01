@@ -65,4 +65,26 @@ public class PromotionController {
         );
         return ResponseEntity.ok(updatedPromo);
     }
+
+    @DeleteMapping("/{id}/hard-delete")
+    public ResponseEntity<Void> hardDeletePromotion(@PathVariable("id") Long promotionId) {
+        promotionService.hardDeletePromotion(promotionId);
+        // Trả về 204 No Content - nghĩa là "Xóa thành công, không có gì để trả về"
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * API MỚI: Chỉ lấy URL hình ảnh của một khuyến mãi
+     */
+    @GetMapping("/{id}/image")
+    public ResponseEntity<Map<String, String>> getPromotionImage(@PathVariable("id") Long promotionId) {
+        // 1. Dùng lại hàm service đã có để lấy entity
+        Promotion promotion = promotionService.getPromotionById(promotionId);
+
+        // 2. Tạo một đối tượng Map đơn giản chỉ chứa imageUrl
+        // (Nếu bạn muốn, bạn có thể tạo DTO riêng cho việc này)
+        Map<String, String> response = Map.of("imageUrl", promotion.getImageUrl());
+
+        return ResponseEntity.ok(response);
+    }
 }

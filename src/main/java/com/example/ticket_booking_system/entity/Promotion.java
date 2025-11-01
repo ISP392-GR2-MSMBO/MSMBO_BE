@@ -27,6 +27,9 @@ public class Promotion {
     private Float discountValue;
     private boolean isActive;
 
+    @Column
+    private String imageUrl;
+
     @ManyToMany
     @JoinTable(
             name = "tblPromotion_SeatType",
