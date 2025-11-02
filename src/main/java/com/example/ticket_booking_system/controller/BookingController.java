@@ -74,4 +74,14 @@ public class BookingController {
         BookingDetailResponse response = bookingService.getBookingDetailById(bookingDetailId);
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * API 7: Xóa Booking (Dùng khi người dùng hủy thanh toán)
+     * Frontend sẽ gọi API này khi PayOS redirect về trang "cancelUrl"
+     */
+    @DeleteMapping("/{bookingId}")
+    public ResponseEntity<Void> deleteBooking(@PathVariable Long bookingId) {
+        bookingService.hardDeleteBooking(bookingId);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -16,6 +16,7 @@ import com.example.ticket_booking_system.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.ticket_booking_system.repository.PaymentRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,7 +34,8 @@ public class BookingService {
     private final UserRepository userRepository;
     private final ShowtimeRepository showtimeRepository;
     private final SeatRepository seatRepository;
-    private final PriceService priceService; // Dùng để tính giá ghế
+    private final PaymentRepository paymentRepository;
+    private final PriceService priceService;// Dùng để tính giá ghế
 
     /**
      * CHỨC NĂNG 1: TẠO BOOKING MỚI (ĐẶT VÉ)
@@ -96,13 +98,11 @@ public class BookingService {
         }
         booking.setBookingDetails(seatDetailsList); // Gán ds chi tiết ghế vào Hóa đơn
 
-
-
-        // 6. Tính tổng tiền cuối cùng và Lưu
+        // 5. Tính tổng tiền cuối cùng và Lưu
         booking.setTotalPrice(totalSeatPrice);
         Booking savedBooking = bookingRepository.save(booking); // Lưu hóa đơn (sẽ tự lưu các Detail)
 
-        // 7. Map sang Response DTO để trả về
+        // 6. Map sang Response DTO để trả về
         return BookingMapper.toBookingResponse(savedBooking);
     }
 
@@ -223,5 +223,28 @@ public class BookingService {
                 .orElseThrow(() -> new AppException(ErrorCode.BOOKING_DETAIL_NOT_FOUND));
 
         return BookingMapper.toBookingDetailResponse(detail);
+    }
+
+    /**
+     * CHỨC NĂNG 7: Xóa cứng các hóa đơn do khách hàng cancelled và giải phóng ghế
+     */
+    @Transactional
+    public void hardDeleteBooking(Long bookingId) {
+        // 1. Tìm booking, nếu không thấy thì báo lỗi
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
+
+        // 2. Chỉ xóa nếu booking đang ở trạng thái PENDING
+        if (booking.getStatus() != BookingStatus.PENDING) {
+            // Bạn có thể tạo ErrorCode mới: CANNOT_DELETE_CONFIRMED_BOOKING
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+        }
+
+        // 3. Xóa Payment liên quan trước (để tránh lỗi khóa ngoại)
+        // Chúng ta phải dùng @Transactional để đảm bảo cả 2 cùng thành công
+        paymentRepository.deleteByBooking_BookingID(bookingId);
+
+        // 4. Xóa Booking (sẽ tự động cascade xóa BookingDetail)
+        bookingRepository.deleteById(bookingId);
     }
 }

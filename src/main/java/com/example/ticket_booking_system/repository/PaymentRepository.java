@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
     Optional<Payment> findByBooking_BookingIDAndStatus(Long bookingID, PaymentStatus status);
+    void deleteByBooking_BookingID(Long bookingID);
 }
