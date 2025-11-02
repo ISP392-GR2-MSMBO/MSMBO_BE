@@ -17,11 +17,14 @@ import java.util.List;
 public class MovieService {
     private final MovieRepository movieRepository;
 
-
+//    Chức năng: Lấy danh sách tất cả các phim.
+//    Logic: Chỉ trả về các phim chưa bị xóa mềm (isDeleted = false).
     public List<Movie> getAllMovies() {
         return movieRepository.findByIsDeletedFalse();
     }
 
+//    Chức năng: Lấy thông tin chi tiết của một phim theo ID.
+//    Logic: Nếu không tìm thấy phim, ném lỗi MOVIE_NOT_FOUND.
     public Movie getMovie(Long movieId) {
         return movieRepository.findById(movieId)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));

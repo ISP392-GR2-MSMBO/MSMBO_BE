@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://chillcinema.netlify.app/") // cần thêm khi nối React
 public class AuthController {
 
     private final AuthService authService;
