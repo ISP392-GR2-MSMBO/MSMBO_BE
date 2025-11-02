@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 //@CrossOrigin(origins = "http://localhost:3000") // can them khi noi react
-@CrossOrigin(origins = "https://chillcinema.netlify.app/") // cần thêm khi nối React
+@CrossOrigin(origins = "https://chillcinema.vercel.app/") // cần thêm khi nối React
 public class UserController {
 
     private final UserService userService;

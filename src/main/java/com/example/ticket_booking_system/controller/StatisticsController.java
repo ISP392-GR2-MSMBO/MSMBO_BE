@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/api/statistics")
 @RequiredArgsConstructor
 //@CrossOrigin(origins = "http://localhost:3000")
-@CrossOrigin(origins = "https://chillcinema.netlify.app/") // cần thêm khi nối React
+@CrossOrigin(origins = "https://chillcinema.vercel.app/") // cần thêm khi nối React
 public class StatisticsController {
     private final StatisticsService statisticsService;
 
