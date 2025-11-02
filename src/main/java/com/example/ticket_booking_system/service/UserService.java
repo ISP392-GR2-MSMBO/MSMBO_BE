@@ -53,18 +53,13 @@ public class UserService {
 
         // Ghi đè mật khẩu gốc bằng mật khẩu đã mã hóa
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        user.setEmailVerified(false);
-        // tạo token + hạn 24h
-        String token = generateToken();
-        user.setEmailVerifyToken(token);
-        user.setEmailVerifyTokenExp(java.time.LocalDateTime.now().plusMinutes(20));
+        user.setEmailVerified(true);
+        user.setEmailVerifyToken(null); // Không cần token
+        user.setEmailVerifyTokenExp(null);
         userRepository.save(user);
-        // gửi mail kèm link xác thực
-        String link = baseUrl + "/api/users/verify-email?token=" + token;
-        emailService.sendEmailVerification(user.getEmail(), link);
         return UserMapper.toResponse(user);
     }
+
     public void verifyEmail(String token) {
         User user = userRepository.findByEmailVerifyToken(token)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_TOKEN));
@@ -73,7 +68,6 @@ public class UserService {
                 java.time.LocalDateTime.now().isAfter(user.getEmailVerifyTokenExp())) {
             throw new AppException(ErrorCode.TOKEN_EXPIRED);
         }
-
         user.setEmailVerified(true);
         user.setEmailVerifyToken(null);
         user.setEmailVerifyTokenExp(null);
