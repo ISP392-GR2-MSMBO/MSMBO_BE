@@ -22,7 +22,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/seat")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000") // cần thêm khi nối React
+//@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://chillcinema.netlify.app/") // cần thêm khi nối React cần thêm khi nối React
 public class SeatController {
 
 

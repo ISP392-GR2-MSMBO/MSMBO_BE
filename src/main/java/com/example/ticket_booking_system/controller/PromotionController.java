@@ -20,7 +20,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/admin/promotions")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://chillcinema.netlify.app/") // cần thêm khi nối React
 public class PromotionController {
     private final PromotionService promotionService;
 
