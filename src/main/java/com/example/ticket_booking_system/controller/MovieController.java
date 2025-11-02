@@ -22,7 +22,7 @@ import com.example.ticket_booking_system.dto.reponse.movie.MovieResponse;
 @RequiredArgsConstructor
 @RequestMapping("/api/movie")
 //@CrossOrigin(origins = "http://localhost:3000") // cần thêm khi nối React
-@CrossOrigin(origins = "https://chillcinema.netlify.app/") // cần thêm khi nối React
+@CrossOrigin(origins = "https://chillcinema.vercel.app/") // cần thêm khi nối React
 public class MovieController {
     private final MovieService movieService;
     private final ShowtimeService showtimeService;

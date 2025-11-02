@@ -20,7 +20,7 @@ import vn.payos.model.webhooks.*;
 @RestController
 @RequestMapping("/payment")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "https://chillcinema.netlify.app/") // cần thêm khi nối React
+@CrossOrigin(origins = "https://chillcinema.vercel.app/") // cần thêm khi nối React
 public class PaymentController {
     private final PayOS payOS;
     private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
