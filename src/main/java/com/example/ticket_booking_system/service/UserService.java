@@ -30,6 +30,8 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     @Value("${app.base-url}")
     private String baseUrl; // Spring sẽ inject giá trị từ application.properties
+    @Value("${app.frontend-url}")
+    private String frontendUrl; // Biến mới để chứa URL Vercel
     // Lấy danh sách tất cả user
     public List<UserResponse> getAllUsers() {
         return userRepository.findByIsDeleteFalse()
@@ -222,7 +224,7 @@ public class UserService {
 
             // 4. Tạo link (Link này trỏ về Frontend của bạn)
             // Ví dụ: http://localhost:3000/reset-password?token=... sau nay doi ten local host thi doi lại link nay
-            String link = "http://localhost:3000/reset-password?token=" + token;
+            String link = frontendUrl + "/reset-password?token=" + token;
 
             // 5. Gửi email
             emailService.sendPasswordResetEmail(user.getEmail(), link);
