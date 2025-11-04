@@ -34,6 +34,7 @@ public class PaymentService {
     private final BookingRepository bookingRepository;
     private final PaymentRepository paymentRepository;
     private final PayOS payOS;
+    private final EmailService emailService;
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
@@ -43,6 +44,9 @@ public class PaymentService {
 
     @Value("${payos.cancel-url}")
     private String cancelUrl;
+
+    @Value("${app.frontend-url}")
+    private String frontendUrl; // Biến mới để chứa URL Vercel
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CreatePaymentLinkResponse createPaymentLink(CreatePaymentRequest request) throws Exception {
@@ -153,6 +157,11 @@ public class PaymentService {
         Booking booking = payment.getBooking();
         booking.setStatus(BookingStatus.CONFIRMED);
         bookingRepository.save(booking);
+
+        // --- 2. GỌI HÀM GỬI VÉ ĐIỆN TỬ ---
+        emailService.sendElectronicTicket(booking.getBookingID());
+        logger.info("E-ticket sending task triggered for bookingId: {}", booking.getBookingID());
+        // --- KẾT THÚC THAY ĐỔI ---
         return true;
     }
 
