@@ -120,9 +120,18 @@ public class BookingService {
         List<Seat> allSeatsInTheater = seatRepository.findByTheaterId(theaterId);
 
         // 3. Lấy TẤT CẢ ghế ĐÃ BÁN (SOLD) cho suất chiếu này
-        List<BookingDetail> soldDetails = bookingDetailRepository.findAllByBooking_Showtime_ShowtimeID(showtimeId);
-        Set<Long> soldSeatIds = soldDetails.stream()
-                .filter(detail -> detail.getStatus() == BookingDetailStatus.ACTIVE)
+        List<BookingDetail> allDetails = bookingDetailRepository.findAllByBooking_Showtime_ShowtimeID(showtimeId);
+        // 3a. Lọc ra những ghế đã BÁN (Booking = CONFIRMED)
+        Set<Long> soldSeatIds = allDetails.stream()
+                .filter(detail -> detail.getBooking().getStatus() == BookingStatus.CONFIRMED &&
+                        detail.getStatus() == BookingDetailStatus.ACTIVE)
+                .map(detail -> detail.getSeat().getSeatID())
+                .collect(Collectors.toSet());
+
+        // 3b. Lọc ra những ghế đang CHỜ (Booking = PENDING)
+        Set<Long> pendingSeatIds = allDetails.stream()
+                .filter(detail -> detail.getBooking().getStatus() == BookingStatus.PENDING &&
+                        detail.getStatus() == BookingDetailStatus.ACTIVE)
                 .map(detail -> detail.getSeat().getSeatID())
                 .collect(Collectors.toSet());
 
