@@ -55,4 +55,12 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
     List<Showtime> findByMovie_MovieIDAndIsDeletedFalseAndDateGreaterThanEqualOrderByDateAscStartTimeAsc(
             Long movieId, LocalDate date
     );
+
+    /**
+     * Tìm suất chiếu public theo MovieID VÀ Tên Rạp (ví dụ: "2D", "IMAX")
+     * Chỉ lấy các suất từ hôm nay trở về sau.
+     */
+    List<Showtime> findByMovie_MovieIDAndTheater_TheaterNameAndIsDeletedFalseAndDateGreaterThanEqualOrderByDateAscStartTimeAsc(
+            Long movieId, String theaterName, LocalDate date
+    );
 }
