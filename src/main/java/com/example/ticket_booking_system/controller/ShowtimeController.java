@@ -58,6 +58,25 @@ import java.util.List;
             return ResponseEntity.ok(ShowtimeMapper.toResponse(updated));
         }
 
+        /**
+         * API MỚI: Lọc suất chiếu của phim theo Tên Rạp (2D/IMAX)
+         * Cách gọi: GET /api/showtime/movie/{movieId}/filter?theaterName=2D
+         * hoặc: GET /api/showtime/movie/{movieId}/filter?theaterName=IMAX
+         */
+        @GetMapping("/movie/{movieId}/filter")
+        public ResponseEntity<List<ShowtimeResponse>> getPublicByMovieAndTheaterName(
+                @PathVariable Long movieId,
+                @RequestParam String theaterName) {
+
+            List<Showtime> showtimes = showtimeService.getPublicShowtimesByMovieAndTheaterName(movieId, theaterName);
+
+            List<ShowtimeResponse> response = showtimes.stream()
+                    .map(ShowtimeMapper::toResponse)
+                    .toList();
+
+            return ResponseEntity.ok(response);
+        }
+
         // Xoá showtime
         @DeleteMapping("/{id}")
         public ResponseEntity<Void> deleteShowtime(@PathVariable Long id) {

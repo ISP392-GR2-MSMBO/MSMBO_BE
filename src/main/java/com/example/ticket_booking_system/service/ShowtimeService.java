@@ -173,6 +173,23 @@ public class ShowtimeService {
     }
 
     /**
+     * Lấy suất chiếu public theo MovieID và Lọc theo Tên Rạp (2D/IMAX)
+     */
+    public List<Showtime> getPublicShowtimesByMovieAndTheaterName(Long movieId, String theaterName) {
+        if (movieId == null) throw new AppException(ErrorCode.MOVIE_NOT_FOUND);
+
+        List<Showtime> showtimes = showtimeRepository
+                .findByMovie_MovieIDAndTheater_TheaterNameAndIsDeletedFalseAndDateGreaterThanEqualOrderByDateAscStartTimeAsc(
+                        movieId, theaterName, LocalDate.now()
+                );
+
+        // Không ném lỗi nếu rạp đó không có suất, chỉ trả về danh sách rỗng
+        // if (showtimes.isEmpty()) throw new AppException(ErrorCode.SHOWTIME_NOT_FOUND);
+
+        return showtimes;
+    }
+
+    /**
      * Chức năng: Admin phê duyệt (approve = true) hoặc từ chối (approve = false) suất chiếu.
      * Logic khi Phê duyệt (approve = true):
      */
