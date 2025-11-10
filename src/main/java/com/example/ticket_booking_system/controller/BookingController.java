@@ -24,12 +24,11 @@ public class BookingController {
     /**
      * API 1: Tạo booking (đặt vé)
      */
-    @PostMapping("/user/{userId}") // <-- SỬA Ở ĐÂY
+    @PostMapping
     public ResponseEntity<BookingResponse> createBooking(
-            @PathVariable Long userId, // <-- THÊM DÒNG NÀY
+            @PathVariable Long userId,
             @Valid @RequestBody CreateBookingRequest request
     ) {
-        // SỬA: Truyền userId vào service
         BookingResponse response = bookingService.createBooking(userId, request); // <-- SỬA Ở ĐÂY
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
