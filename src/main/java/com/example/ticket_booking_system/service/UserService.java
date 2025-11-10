@@ -56,7 +56,7 @@ public class UserService {
         // Ghi đè mật khẩu gốc bằng mật khẩu đã mã hóa
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmailVerified(true);
-        user.setEmailVerifyToken(null); // Không cần token
+        user.setEmailVerifyToken(null);
         user.setEmailVerifyTokenExp(null);
         userRepository.save(user);
         return UserMapper.toResponse(user);

@@ -19,7 +19,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String userName;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String fullName;
 
     @Column(nullable = false)

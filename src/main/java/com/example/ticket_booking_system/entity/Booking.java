@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -39,6 +41,11 @@ public class Booking {
 
     @Column(nullable = false)
     private Float totalPrice; // Tổng tiền cuối cùng (Snapshot)
+
+    // --- THÊM TRƯỜNG NÀY ---
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     // Liên kết đến chi tiết GHẾ
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -23,6 +23,8 @@ public class BookingResponse {
 //    private String email;
 //    private String phone;
 
+    private Long promotionID;
+
     // --- Thông tin suất chiếu ---
     private String movieName;
     private String theaterName;

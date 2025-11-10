@@ -11,4 +11,5 @@ public class BookingDetailResponse {
     private Integer seatNumber; // 4
     private Float price; // 130500
     private BookingDetailStatus status;
+    private Long promotionID;
 }

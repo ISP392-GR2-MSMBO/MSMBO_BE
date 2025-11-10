@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.example.ticket_booking_system.Enum.BookingStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -29,4 +30,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "GROUP BY MONTH(b.bookingDate) " +
             "ORDER BY month ASC")
     List<Object[]> getMonthlyRevenueByYear(@Param("year") int year);
+
+    // --- THÊM HÀM NÀY ---
+    // Tìm các Booking PENDING, mồ côi (chưa có payment), và đã quá hạn
+    @Query("SELECT b FROM Booking b LEFT JOIN Payment p ON b.bookingID = p.booking.bookingID " +
+            "WHERE b.status = :status AND p.paymentId IS NULL AND b.createdAt < :expirationTime")
+    List<Booking> findOrphanPendingBookings(
+            @Param("status") BookingStatus status,
+            @Param("expirationTime") LocalDateTime expirationTime
+    );
 }
