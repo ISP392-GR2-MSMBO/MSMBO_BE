@@ -18,8 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.ticket_booking_system.repository.PaymentRepository;
 
-// SỬA: Import PriceResult từ file mới
+// SỬA: Import PriceResult từ đúng package
 import com.example.ticket_booking_system.dto.Data.PriceResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@CrossOrigin(origins = "https://chillcinema.vercel.app/")
 public class BookingService {
 
     // --- Inject tất cả Repository và Service cần thiết ---
@@ -42,7 +44,7 @@ public class BookingService {
 
     /**
      * CHỨC NĂNG 1: TẠO BOOKING MỚI (ĐẶT VÉ)
-     * SỬA: Thay đổi chữ ký hàm để nhận 'userId' từ Controller (thay vì từ request body)
+     * SỬA: Thay đổi chữ ký hàm để nhận 'Long userId'
      */
     @Transactional // Rất quan trọng: Đảm bảo tất cả hoặc không gì cả
     public BookingResponse createBooking(Long userId, CreateBookingRequest request) {
