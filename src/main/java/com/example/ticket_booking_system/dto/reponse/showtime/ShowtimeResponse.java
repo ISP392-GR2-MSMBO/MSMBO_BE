@@ -24,6 +24,7 @@ public class ShowtimeResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     @Schema(example = "12:00")
     private LocalTime endTime;
+    private String theaterName; // Sẽ chứa "2D" hoặc "IMAX"
     private Approve approveStatus;
     private boolean isDeleted;
 }
