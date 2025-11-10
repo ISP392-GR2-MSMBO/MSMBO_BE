@@ -36,6 +36,8 @@ public class ShowtimeMapper {
         response.setEndTime(entity.getEndTime());
         response.setApproveStatus(entity.getApproveStatus());
         response.setDeleted(entity.isDeleted());
+        // Tự động lấy "2D" hoặc "IMAX" từ quan hệ EAGER
+        response.setTheaterName(entity.getTheater().getTheaterName());
         return response;
     }
 }

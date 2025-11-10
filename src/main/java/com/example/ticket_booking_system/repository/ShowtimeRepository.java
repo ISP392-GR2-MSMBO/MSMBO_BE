@@ -13,6 +13,12 @@ import java.util.List;
 @Repository
 public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
     // Overlap nếu: newStart < s.endTime AND newEnd > s.startTime (cùng theater & date)
+    /**
+     * Kiểm tra xem có bất kỳ suất chiếu nào (s) trong cùng một rạp (:theaterId)
+     * vào cùng một ngày (:date) bị trùng lặp thời gian với khoảng thời gian mới hay không.
+     * Logic trùng lặp (Overlap) là khi:
+     * (Giờ bắt đầu mới < Giờ kết thúc cũ) VÀ (Giờ kết thúc mới > Giờ bắt đầu cũ)
+     */
     @Query("""
            select (count(s) > 0) from Showtime s
            where s.theater.theaterID = :theaterId
@@ -23,6 +29,12 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
                           @Param("date") LocalDate date,
                           @Param("startTime") LocalTime startTime,
                           @Param("endTime") LocalTime endTime);
+
+
+    /**
+     * Lấy tất cả các suất chiếu trong hệ thống.
+     * Sắp xếp theo ngày (tăng dần) và sau đó là giờ bắt đầu (tăng dần).
+     */
     @Query("""
     SELECT s FROM Showtime s
     ORDER BY s.date ASC, s.startTime ASC
@@ -31,6 +43,15 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
 //    List<Showtime> findByMovie_MovieIDAndDateGreaterThanEqualOrderByDateAscStartTimeAsc(
 //            Long movieId, LocalDate today
 //    );
+
+    /**
+     * Tìm các suất chiếu cho một phim cụ thể (:movieId)
+     * CHỈ BAO GỒM:
+     * 1. Các suất chưa bị xóa mềm (IsDeletedFalse)
+     * 2. Các suất từ ngày hôm nay (:date) trở về sau (DateGreaterThanEqual)
+     * Sắp xếp theo ngày và giờ bắt đầu.
+     * (Đây là query dùng cho trang public của khách hàng)
+     */
     List<Showtime> findByMovie_MovieIDAndIsDeletedFalseAndDateGreaterThanEqualOrderByDateAscStartTimeAsc(
             Long movieId, LocalDate date
     );
