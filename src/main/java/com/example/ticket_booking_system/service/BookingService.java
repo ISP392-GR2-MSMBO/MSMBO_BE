@@ -47,11 +47,11 @@ public class BookingService {
      * SỬA: Thay đổi chữ ký hàm để nhận 'Long userId'
      */
     @Transactional // Rất quan trọng: Đảm bảo tất cả hoặc không gì cả
-    public BookingResponse createBooking(Long userId, CreateBookingRequest request) {
+    public BookingResponse createBooking(CreateBookingRequest request) {
 
         // 1. Tìm các Entity chính
         // SỬA: Lấy 'user' từ 'userId' trong tham số
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(request.getUserID())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         Showtime showtime = showtimeRepository.findById(request.getShowtimeID())

@@ -26,10 +26,9 @@ public class BookingController {
      */
     @PostMapping
     public ResponseEntity<BookingResponse> createBooking(
-            @PathVariable Long userId,
             @Valid @RequestBody CreateBookingRequest request
     ) {
-        BookingResponse response = bookingService.createBooking(userId, request); // <-- SỬA Ở ĐÂY
+        BookingResponse response = bookingService.createBooking(request); //
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
