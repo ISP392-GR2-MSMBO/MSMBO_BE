@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/bookings")
 @RequiredArgsConstructor
-//@CrossOrigin(origins = "http://localhost:3000")
 @CrossOrigin(origins = "https://chillcinema.vercel.app/") // cần thêm khi nối React
 public class BookingController {
 
