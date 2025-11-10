@@ -22,13 +22,25 @@ public class BookingMapper {
                 .map(BookingMapper::toBookingDetailResponse)
                 .collect(Collectors.toList());
 
-
+        // --- BẮT ĐẦU TÌM PROMOTION ID ---
+        Long appliedPromoId = null;
+        if (booking.getBookingDetails() != null) {
+            // Lấy ID của KM đầu tiên tìm thấy trong danh sách ghế
+            // (Giả định tất cả các ghế trong 1 vé dùng chung 1 KM nếu có)
+            for (BookingDetail detail : booking.getBookingDetails()) {
+                if (detail.getAppliedPromotion() != null) {
+                    appliedPromoId = detail.getAppliedPromotion().getPromotionID();
+                    break; // Lấy cái đầu tiên rồi dừng lại
+                }
+            }
+        }
         return BookingResponse.builder()
                 // Thông tin vé
                 .bookingID(booking.getBookingID())
                 .bookingDate(booking.getBookingDate())
                 .status(booking.getStatus())
                 .totalPrice(booking.getTotalPrice())
+                .promotionID(appliedPromoId)
                 // Thông tin người đặt
 //                .fullName(user.getFullName())
 //                .email(user.getEmail())

@@ -75,7 +75,7 @@ public class SeatService {
             // Only update if the status is actually different
             if (seat.getStatus() != newStatus) {
                 // No complex business logic needed here anymore,
-                // as we only allow AVAILABLE <-> UNAVAILABLE transitions.
+// as we only allow AVAILABLE <-> UNAVAILABLE transitions.
                 seat.setStatus(newStatus);
             }
             // If seat.getStatus() == newStatus, we do nothing and continue
@@ -105,7 +105,7 @@ public class SeatService {
 
         for(CreateSingleSeatRequest seatReq : seatRequest){
             SeatType seatType = seatTypeRepository.findById(seatReq.getSeatTypeId()).
-            orElseThrow(() -> new AppException(ErrorCode.SEAT_TYPE_NOT_FOUND));
+                    orElseThrow(() -> new AppException(ErrorCode.SEAT_TYPE_NOT_FOUND));
 
             if(seatRepository.existsByTheaterIdAndRowAndNumber(theaterId, seatReq.getRowName(), seatReq.getNumber())){
                 throw new AppException(ErrorCode.SEAT_ALREADY_EXISTS);

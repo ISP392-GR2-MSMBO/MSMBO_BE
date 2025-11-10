@@ -18,6 +18,7 @@ public class Promotion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long promotionID;
 
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;

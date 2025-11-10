@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.ticket_booking_system.repository.PaymentRepository;
 
+// SỬA: Import PriceResult từ file mới
+import com.example.ticket_booking_system.dto.Data.PriceResult;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +42,14 @@ public class BookingService {
 
     /**
      * CHỨC NĂNG 1: TẠO BOOKING MỚI (ĐẶT VÉ)
+     * SỬA: Thay đổi chữ ký hàm để nhận 'userId' từ Controller (thay vì từ request body)
      */
     @Transactional // Rất quan trọng: Đảm bảo tất cả hoặc không gì cả
-    public BookingResponse createBooking(CreateBookingRequest request) {
+    public BookingResponse createBooking(Long userId, CreateBookingRequest request) {
 
         // 1. Tìm các Entity chính
-        User user = userRepository.findById(request.getUserID())
+        // SỬA: Lấy 'user' từ 'userId' trong tham số
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         Showtime showtime = showtimeRepository.findById(request.getShowtimeID())
@@ -84,7 +89,11 @@ public class BookingService {
             }
 
             // 4.3. Lấy giá ghế (đã tính khuyến mãi)
-            Float seatPrice = priceService.calculateFinalPrice(seat.getSeatType());
+            // SỬA: Lấy về PriceResult thay vì Float
+            PriceResult priceResult = priceService.calculateFinalPrice(seat.getSeatType());
+
+            // SỬA: Lấy giá cuối cùng từ priceResult
+            Float seatPrice = priceResult.getFinalPrice();
             totalSeatPrice += seatPrice;
 
             // 4.4. Tạo chi tiết ghế
@@ -93,6 +102,8 @@ public class BookingService {
                     .seat(seat)
                     .price(seatPrice) // "Snapshot" giá ghế
                     .status(BookingDetailStatus.ACTIVE)
+                    // SỬA: Lấy Promotion từ priceResult và lưu lại
+                    .appliedPromotion(priceResult.getAppliedPromotion())
                     .build();
             seatDetailsList.add(detail);
         }
@@ -121,6 +132,7 @@ public class BookingService {
 
         // 3. Lấy TẤT CẢ ghế ĐÃ BÁN (SOLD) cho suất chiếu này
         List<BookingDetail> allDetails = bookingDetailRepository.findAllByBooking_Showtime_ShowtimeID(showtimeId);
+
         // 3a. Lọc ra những ghế đã BÁN (Booking = CONFIRMED)
         Set<Long> soldSeatIds = allDetails.stream()
                 .filter(detail -> detail.getBooking().getStatus() == BookingStatus.CONFIRMED &&
@@ -138,10 +150,12 @@ public class BookingService {
         // 4. Duyệt qua SƠ ĐỒ GỐC (allSeatsInTheater)
         return allSeatsInTheater.stream().map(seat -> {
 
-            // Tính giá (đã có KM)
-            Float finalPrice = priceService.calculateFinalPrice(seat.getSeatType());
+            // SỬA: Lấy PriceResult để lấy giá cuối cùng
+            PriceResult priceResult = priceService.calculateFinalPrice(seat.getSeatType());
+            Float finalPriceFloat = priceResult.getFinalPrice();
+
             // Map sang DTO
-            SeatResponse response = SeatMapper.toResponse(seat, finalPrice);
+            SeatResponse response = SeatMapper.toResponse(seat, finalPriceFloat);
 
             // 5. Gán trạng thái (Status)
             // Ưu tiên 1: Ghế bị admin khóa (hỏng)
@@ -151,6 +165,10 @@ public class BookingService {
             // Ưu tiên 2: Ghế đã bán (cho suất này)
             else if (soldSeatIds.contains(seat.getSeatID())) {
                 response.setStatus("SOLD"); // Trạng thái "SOLD" này là động
+            }
+            // SỬA: Thêm kiểm tra PENDING (sửa lỗi race condition)
+            else if (pendingSeatIds.contains(seat.getSeatID())) {
+                response.setStatus("PENDING");
             }
             // Mặc định: Ghế còn trống
             else {

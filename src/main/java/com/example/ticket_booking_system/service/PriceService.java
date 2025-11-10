@@ -1,6 +1,7 @@
 package com.example.ticket_booking_system.service;
 
 
+import com.example.ticket_booking_system.dto.Data.PriceResult;
 import com.example.ticket_booking_system.entity.Promotion;
 import com.example.ticket_booking_system.entity.SeatType;
 import com.example.ticket_booking_system.repository.PromotionRepository;
@@ -15,18 +16,20 @@ import java.time.LocalDate;
 public class PriceService {
     private final PromotionRepository promotionRepository;
 
-    public Float calculateFinalPrice(SeatType seatType){
+    public PriceResult calculateFinalPrice(SeatType seatType){
         Float basePrice = seatType.getBasePrice();
         LocalDate today = LocalDate.now();
 
         List<Promotion> promotionList = promotionRepository.findActivePromotionsForSeatType(seatType.getSeatTypeID(), today);
 
         if(promotionList.isEmpty()){
-            return basePrice;
+            return new PriceResult(basePrice, null);
         }
 
         //Ap dung KM
         Float bestPrice = basePrice;
+        Promotion bestPromotion = null;
+
         for (Promotion p : promotionList){
             Float discountPrice = basePrice;
             if("percentage".equals(p.getDiscountType())){
@@ -38,8 +41,12 @@ public class PriceService {
             Float roundedDiscountPrice = (float) Math.floor(discountPrice);
 
             if(roundedDiscountPrice < bestPrice){
-                bestPrice = roundedDiscountPrice;}
+                bestPrice = roundedDiscountPrice;
+                bestPromotion = p;
+            }
         }
-        return (bestPrice < 0) ? 0: bestPrice; // tranh gia am
+
+        Float finalBestPrice = (bestPrice < 0) ? 0: bestPrice; // tranh gia am
+        return new PriceResult(finalBestPrice, bestPromotion);
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableAsync // Bật tính năng chạy nền
+@EnableScheduling
 public class TicketBookingSystemApplication {
 
 	public static void main(String[] args) {

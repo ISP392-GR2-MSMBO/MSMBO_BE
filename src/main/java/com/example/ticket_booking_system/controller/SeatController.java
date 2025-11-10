@@ -1,6 +1,7 @@
 package com.example.ticket_booking_system.controller;
 
 import com.example.ticket_booking_system.Enum.SeatStatus;
+import com.example.ticket_booking_system.dto.Data.PriceResult;
 import com.example.ticket_booking_system.dto.reponse.seat.SeatResponse;
 import com.example.ticket_booking_system.dto.request.seat.AddSeatRequest;
 import com.example.ticket_booking_system.dto.request.seat.SeatRequest;
@@ -36,11 +37,17 @@ public class SeatController {
 
         // SỬA LẠI ĐOẠN NÀY
         List<SeatResponse> responses = seats.stream().map(seat -> {
-            // 1. Tính giá cuối cùng cho từng ghế
-            Float finalPrice = priceService.calculateFinalPrice(seat.getSeatType());
 
-            // 2. Gọi mapper với 2 tham số
-            return SeatMapper.toResponse(seat, finalPrice);
+            // --- BẮT ĐẦU SỬA ---
+            // 1. Tính giá (lấy về "cái hộp")
+            PriceResult priceResult = priceService.calculateFinalPrice(seat.getSeatType());
+
+            // 2. Mở hộp để lấy con số Float
+            Float finalPriceFloat = priceResult.getFinalPrice();
+
+            // 3. Gọi mapper với con số Float
+            return SeatMapper.toResponse(seat, finalPriceFloat);
+            // --- KẾT THÚC SỬA ---
 
         }).toList(); // KẾT THÚC SỬA
 
