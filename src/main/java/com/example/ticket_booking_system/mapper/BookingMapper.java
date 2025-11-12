@@ -57,11 +57,15 @@ public class BookingMapper {
 
     // Hàm phụ: Map chi tiết 1 ghế
     public static BookingDetailResponse toBookingDetailResponse(BookingDetail detail) {
+        Promotion promotion = detail.getAppliedPromotion();
+        Long promoId = (promotion != null) ? promotion.getPromotionID() : null;
         return BookingDetailResponse.builder()
+                .seatID(detail.getSeat().getSeatID())
                 .seatRow(detail.getSeat().getRow())
                 .seatNumber(detail.getSeat().getNumber())
                 .price(detail.getPrice())
                 .status(detail.getStatus())
+                .promotionID(promoId)
                 .build();
     }
 
