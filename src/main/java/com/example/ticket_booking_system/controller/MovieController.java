@@ -1,6 +1,7 @@
 package com.example.ticket_booking_system.controller;
 
 import com.example.ticket_booking_system.dto.request.movie.BannerRequest;
+import com.example.ticket_booking_system.dto.request.movie.MovieUpdateRequest;
 import com.example.ticket_booking_system.exception.AppException;
 import com.example.ticket_booking_system.exception.ErrorCode;
 import com.example.ticket_booking_system.mapper.MovieMapper;
@@ -64,7 +65,7 @@ public class MovieController {
 
     @PutMapping("/{id}")
     public ResponseEntity<MovieResponse> updateMovie(@PathVariable Long id,
-                                                     @Valid @RequestBody MovieRequest request) {
+                                                     @Valid @RequestBody MovieUpdateRequest request) {
         Movie movie = MovieMapper.toEntity(request);
         Movie updated = movieService.updateMovie(id, movie);
         return ResponseEntity.ok(MovieMapper.toResponse(updated));

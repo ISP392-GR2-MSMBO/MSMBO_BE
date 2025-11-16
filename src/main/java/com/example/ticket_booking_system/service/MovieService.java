@@ -34,9 +34,6 @@ public class MovieService {
         return movieRepository.findByMovieNameIgnoreCase(movieName)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
     }
-//    public List<Movie> findByStatus(String status) {
-//        return movieRepository.findByStatusIgnoreCase(status);
-//    }
 
     // Tìm kiếm gần đúng theo từ khóa (dựa trên tên phim)
     public List<Movie> searchMoviesByKeyword(String keyword) {
@@ -44,7 +41,7 @@ public class MovieService {
     }
 
 
-    // Thêm lại: tìm theo status (string) – có chuẩn hoá trước khi query
+    // tìm theo status (string) – có chuẩn hoá trước khi query
     /**
      * Chức năng: Tìm phim theo trạng thái (Now Showing, Coming Soon, Ended).
      * Logic: Chuẩn hóa chuỗi trạng thái đầu vào trước khi truy vấn.
@@ -121,9 +118,16 @@ public class MovieService {
         Movie existingMovie = movieRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
 
-        /* 3. Cập nhật thông tin chi tiết.
-         Sử dụng Builder pattern với toBuilder()*/
-        Movie updatedMovie = existingMovie.toBuilder()
+        // 3. Kiểm tra xem có thay đổi nào quan trọng (ngoài status) không.
+        boolean criticalChange = !existingMovie.getMovieName().equals(movieDetails.getMovieName())
+                || !existingMovie.getGenre().equals(movieDetails.getGenre())
+                || existingMovie.getDuration() != movieDetails.getDuration()
+                || !existingMovie.getDirector().equals(movieDetails.getDirector())
+                || !existingMovie.getActress().equals(movieDetails.getActress())
+                || !existingMovie.getReleaseDate().equals(movieDetails.getReleaseDate());
+
+        // 4. Cập nhật thông tin chi tiết.
+        Movie.MovieBuilder movieBuilder = existingMovie.toBuilder()
                 .movieName(movieDetails.getMovieName())
                 .genre(movieDetails.getGenre())
                 .duration(movieDetails.getDuration())
@@ -135,13 +139,17 @@ public class MovieService {
                 .description(movieDetails.getDescription())
                 .poster(movieDetails.getPoster())
                 .trailer(movieDetails.getTrailer())
-                .status(normalizeStatus(movieDetails.getStatus())) // Đặt lại trạng thái chờ duyệt
-                .approveStatus(Approve.PENDING)
-                .isPublished(false) // Gỡ xuất bản
-                .build();
+                .status(normalizeStatus(movieDetails.getStatus())); // Luôn cập nhật status mới
 
-        // 4. Tự động chuyển trạng thái về PENDING và isPublished = false (yêu cầu duyệt lại)
-        return movieRepository.save(updatedMovie);
+        // 5. Tự động chuyển trạng thái về PENDING nếu có thay đổi quan trọng
+        if (criticalChange) {
+            movieBuilder.approveStatus(Approve.PENDING); // Đặt lại trạng thái chờ duyệt
+            movieBuilder.isPublished(false); // Gỡ xuất bản
+        }
+        // NẾU KHÔNG CÓ THAY ĐỔI QUAN TRỌNG (vd: chỉ đổi status sang Ended)
+        // thì approveStatus và isPublished sẽ được giữ nguyên.
+
+        return movieRepository.save(movieBuilder.build());
     }
 
     /**

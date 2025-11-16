@@ -15,14 +15,11 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByUserUserIDOrderByBookingDateDesc(Long userId);
 
-    // -----------------------------------------------------------------
-    // ✅ HÀM MỚI (ĐÃ FIX): Thêm query để lấy doanh thu theo tháng
-    // -----------------------------------------------------------------
-    /**
-     * Truy vấn này trả về một List các object,
-     * mỗi object chứa [Integer month, Float totalRevenue]
-     * cho một năm cụ thể và CHỈ TÍNH CÁC VÉ ĐÃ CONFIRMED.
-     */
+    //  HÀM MỚI (ĐÃ FIX): Thêm query để lấy doanh thu theo tháng
+
+//      Truy vấn này trả về một List các object,
+//      mỗi object chứa [Integer month, Float totalRevenue]
+//      cho một năm cụ thể và CHỈ TÍNH CÁC VÉ ĐÃ CONFIRMED.
     @Query("SELECT MONTH(b.bookingDate) as month, SUM(b.totalPrice) as revenue " +
             "FROM Booking b " +
             "WHERE YEAR(b.bookingDate) = :year " +
@@ -31,7 +28,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "ORDER BY month ASC")
     List<Object[]> getMonthlyRevenueByYear(@Param("year") int year);
 
-    // --- THÊM HÀM NÀY ---
+
     // Tìm các Booking PENDING, mồ côi (chưa có payment), và đã quá hạn
     @Query("SELECT b FROM Booking b LEFT JOIN Payment p ON b.bookingID = p.booking.bookingID " +
             "WHERE b.status = :status AND p.paymentId IS NULL AND b.createdAt < :expirationTime")

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MovieRequest {
+public class MovieUpdateRequest {
     @NotBlank(message = "Movie name cannot be blank")
     private String movieName;
     @Size(min = 1, max = 100, message = "Genre requires at least 1 character and maximum 100 characters")
@@ -22,14 +22,15 @@ public class MovieRequest {
     private String director;
     @Size(min = 1, message = "Actress requires at least 1 character")
     private String actress;
+
+    // ĐÂY LÀ KHÁC BIỆT QUAN TRỌNG:
+    // Đã xóa @FutureOrPresent
     @NotNull(message = "Release date cannot be null")
-    //@FutureOrPresent(message = "Date must be today or in the future")
     private LocalDate releaseDate;
+
     private String language;
     private String description;
     private String poster;
     private String trailer;
     private String status;
 }
-
-
